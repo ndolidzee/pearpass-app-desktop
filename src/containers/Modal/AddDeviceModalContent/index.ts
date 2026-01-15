@@ -212,7 +212,7 @@ export const AddDeviceModalContent = () => {
             $active=${!scanQRStep}
             onClick=${() => setScanQRStep(false)}
           >
-            ${t('Load a vault')}
+            ${t('Import vault')}
           <//>
         <//>
         ${scanQRStep

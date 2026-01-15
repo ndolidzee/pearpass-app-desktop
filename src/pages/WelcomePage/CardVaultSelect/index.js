@@ -82,7 +82,7 @@ export const CardVaultSelect = () => {
           <//>`
         : html`<${CardNoVaultsText}>
             ${i18n._(
-              'Start fresh with a new vault or open an existing one to continue.'
+              'Start fresh with a new vault or import an existing one to continue.'
             )}
           <//> `}
 
