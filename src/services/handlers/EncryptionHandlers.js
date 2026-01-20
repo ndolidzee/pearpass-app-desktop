@@ -81,4 +81,9 @@ export class EncryptionHandlers {
 
     return status
   }
+
+  async resetFailedAttempts() {
+    logger.info('ENCRYPTION-HANDLER', `Resetting failed attempts`)
+    return await this.client.resetFailedAttempts()
+  }
 }
