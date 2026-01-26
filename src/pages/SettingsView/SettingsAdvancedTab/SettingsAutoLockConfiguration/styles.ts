@@ -10,19 +10,26 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
   `
 
-  export const TooltipContent = styled.div`
-    font-family: 'Inter';
-    font-size: 14px;
-    line-height: 18px;
-    color: ${({ theme }) => theme.colors.white.mode1};
-  
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 400px;
-  `
+export const TooltipContainer = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+` 
+
+export const TooltipContent = styled.div`
+  font-family: 'Inter';
+  font-size: 14px;
+  line-height: 18px;
+  color: ${({ theme }) => theme.colors.white.mode1};
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 400px;
+`
 
 export const ListContainer = styled.ul`
   display: flex;

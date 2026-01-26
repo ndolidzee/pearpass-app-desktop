@@ -8,7 +8,13 @@ import { useAutoLockPreferences } from '../../../../hooks/useAutoLockPreferences
 import { useTranslation } from '../../../../hooks/useTranslation'
 import { InfoIcon } from '../../../../lib-react-components'
 import { TooltipWrapper } from '../../../../lib-react-components/components/TooltipWrapper'
-import { Container, ListContainer, TooltipContent, Wrapper } from './styles'
+import {
+  Container,
+  ListContainer,
+  TooltipContainer,
+  TooltipContent,
+  Wrapper
+} from './styles'
 
 export const TIMEOUT_OPTIONS = Object.values(AUTO_LOCK_TIMEOUT_OPTIONS)
 
@@ -53,37 +59,39 @@ export const AutoLockConfiguration = () => {
           />
         `}
       <//>
-      <${PopupMenu}
-        displayOnHover=${true}
-        side="right"
-        align="right"
-        isOpen=${isTooltipOpen}
-        setIsOpen=${setIsTooltipOpen}
-        content=${html`
-          <${TooltipWrapper}>
-            <${TooltipContent}>
-              <${ListContainer}>
-                <li>
-                  ${t(
-                    "Auto-lock determines how long Pearpass stays unlocked when you're not actively using it."
-                  )}
-                </li>
-                <li>
-                  ${t(
-                    'Inactivity is based on your interaction with Pearpass, not on device idle time.'
-                  )}
-                </li>
-                <li>
-                  ${t(
-                    "On desktop and browser, Pearpass keeps your session aligned—activity in one helps keep the other unlocked while you're working. Mobile auto-lock is managed separately."
-                  )}
-                </li>
+      <${TooltipContainer}>
+        <${PopupMenu}
+          displayOnHover=${true}
+          side="right"
+          align="right"
+          isOpen=${isTooltipOpen}
+          setIsOpen=${setIsTooltipOpen}
+          content=${html`
+            <${TooltipWrapper}>
+              <${TooltipContent}>
+                <${ListContainer}>
+                  <li>
+                    ${t(
+                      "Auto-lock determines how long Pearpass stays unlocked when you're not actively using it."
+                    )}
+                  </li>
+                  <li>
+                    ${t(
+                      'Inactivity is based on your interaction with Pearpass, not on device idle time.'
+                    )}
+                  </li>
+                  <li>
+                    ${t(
+                      "On desktop and browser, Pearpass keeps your session aligned—activity in one helps keep the other unlocked while you're working. Mobile auto-lock is managed separately."
+                    )}
+                  </li>
+                <//>
               <//>
             <//>
-          <//>
-        `}
-      >
-        <${InfoIcon} />
+          `}
+        >
+          <${InfoIcon} />
+        <//>
       <//>
     <//>
   `
