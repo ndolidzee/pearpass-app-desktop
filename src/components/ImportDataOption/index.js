@@ -24,6 +24,7 @@ export const ImportDataOption = ({
     setModal(
       html`<${UploadFilesModalContent}
         type=${'file'}
+        closeOnChange=${false}
         accepts=${accepts.join(',')}
         onFilesSelected=${onFilesSelected}
       />`

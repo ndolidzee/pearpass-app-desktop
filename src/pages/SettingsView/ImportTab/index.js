@@ -8,14 +8,17 @@ import {
   parsePearPassData,
   parseProtonPassData
 } from 'pearpass-lib-data-import'
-import { useCreateRecord } from 'pearpass-lib-vault'
+import { useCreateRecord, decryptExportData } from 'pearpass-lib-vault'
 
 import { ContentContainer, Description, ImportOptionsContainer } from './styles'
 import { readFileContent } from './utils/readFileContent'
 import { CardSingleSetting } from '../../../components/CardSingleSetting'
 import { ImportDataOption } from '../../../components/ImportDataOption'
+import { DecryptFilePassword } from '../../../containers/Modal/DecryptFilePassword'
+import { useModal } from '../../../context/ModalContext'
 import { useToast } from '../../../context/ToastContext'
 import { useTranslation } from '../../../hooks/useTranslation'
+import { LockIcon } from '../../../lib-react-components'
 import { logger } from '../../../utils/logger'
 
 const importOptions = [
@@ -49,13 +52,12 @@ const importOptions = [
     accepts: ['.csv', '.json'],
     imgSrc: '/assets/images/ProtonPass.png'
   },
-  // Not supported yet
-  // {
-  //   title: 'Encrypted file',
-  //   type: 'encrypted',
-  //   accepts: ['.json'],
-  //   icon: LockIcon
-  // },
+  {
+    title: 'Encrypted file',
+    type: 'encrypted',
+    accepts: ['.pearpass'],
+    icon: LockIcon
+  },
   {
     title: 'Unencrypted file',
     type: 'unencrypted',
@@ -75,12 +77,41 @@ const isAllowedType = (fileType, accepts) =>
 export const ImportTab = () => {
   const { t } = useTranslation()
   const { setToast } = useToast()
+  const { setModal, closeModal } = useModal()
 
   const { createRecord } = useCreateRecord()
 
   const onError = (error) => {
     setToast({
       message: error.message
+    })
+  }
+
+  const performImport = async (records) => {
+    if (records.length === 0) {
+      setToast({
+        message: t('No records found to import!')
+      })
+      return
+    }
+
+    if (records.length > MAX_IMPORT_RECORDS) {
+      setToast({
+        message: t(`Too many records. Maximum is ${MAX_IMPORT_RECORDS}.`)
+      })
+      return
+    }
+
+    const BATCH_SIZE = 100
+    const totalRecords = records.length
+
+    for (let i = 0; i < totalRecords; i += BATCH_SIZE) {
+      const batch = records.slice(i, i + BATCH_SIZE)
+      await Promise.all(batch.map((record) => createRecord(record, onError)))
+    }
+
+    setToast({
+      message: t('Data imported successfully')
     })
   }
 
@@ -117,37 +148,53 @@ export const ImportTab = () => {
         case 'unencrypted':
           result = await parsePearPassData(fileContent, fileType)
           break
+        case 'encrypted':
+          const encryptedData = JSON.parse(fileContent)
+
+          if (!encryptedData.encrypted) {
+            throw new Error('File is not encrypted')
+          }
+
+          setModal(
+            html`<${DecryptFilePassword}
+              onSubmit=${async (password) => {
+                try {
+                  const decryptedContent = await decryptExportData(
+                    encryptedData,
+                    password
+                  )
+
+                  const parsedRecords = await parsePearPassData(
+                    decryptedContent,
+                    'json'
+                  )
+
+                  await performImport(parsedRecords)
+
+                  closeModal()
+                } catch (decryptError) {
+                  logger.error(
+                    'DecryptFilePassword',
+                    'Decryption error:',
+                    decryptError
+                  )
+                  throw decryptError
+                }
+              }}
+            />`,
+            { replace: true }
+          )
+
+          return
+
         default:
           throw new Error(
             'Unsupported template type. Please select a valid import option.'
           )
       }
 
-      if (result.length === 0) {
-        setToast({
-          message: t('No records found to import!')
-        })
-        return
-      }
-
-      if (result.length > MAX_IMPORT_RECORDS) {
-        setToast({
-          message: t(`Too many records. Maximum is ${MAX_IMPORT_RECORDS}.`)
-        })
-        return
-      }
-
-      const BATCH_SIZE = 100
-      const totalRecords = result.length
-
-      for (let i = 0; i < totalRecords; i += BATCH_SIZE) {
-        const batch = result.slice(i, i + BATCH_SIZE)
-        await Promise.all(batch.map((record) => createRecord(record, onError)))
-      }
-
-      setToast({
-        message: t('Data imported successfully')
-      })
+      await performImport(result)
+      closeModal()
     } catch (error) {
       logger.error(
         'useGetMultipleFiles',
