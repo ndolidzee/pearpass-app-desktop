@@ -11,7 +11,7 @@ import {
   parsePearPassData,
   parseProtonPassData
 } from 'pearpass-lib-data-import'
-import { useCreateRecord, decryptExportData } from 'pearpass-lib-vault'
+import { decryptExportData, useCreateRecord } from 'pearpass-lib-vault'
 
 import {
   ContentContainer,
@@ -31,7 +31,6 @@ import { ModalContent } from '../../../containers/Modal/ModalContent'
 import { useModal } from '../../../context/ModalContext'
 import { useToast } from '../../../context/ToastContext'
 import { useTranslation } from '../../../hooks/useTranslation'
-import { LockIcon } from '../../../lib-react-components'
 import { ButtonPrimary } from '../../../lib-react-components'
 import { logger } from '../../../utils/logger'
 
@@ -89,7 +88,7 @@ const importOptions = [
     title: 'Encrypted file',
     type: 'encrypted',
     accepts: ['.pearpass'],
-    icon: LockIcon
+    imgSrc: '/assets/images/pearpass_logo.png'
   },
   {
     title: 'Unencrypted file',

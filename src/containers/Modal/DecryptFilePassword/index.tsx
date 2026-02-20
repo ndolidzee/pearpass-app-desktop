@@ -82,7 +82,7 @@ export const DecryptFilePassword = ({ onSubmit }: props) => {
         ...${register('password')}
       />
 
-      <${ButtonPrimary} type="submit"> ${t('Decrypt & Import')} <//>
+      <${ButtonPrimary} type="submit"> ${t('Import')} <//>
     <//>
   <//>`
 }
