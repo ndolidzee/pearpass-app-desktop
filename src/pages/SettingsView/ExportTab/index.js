@@ -164,7 +164,10 @@ export const ExportTab = () => {
     refetchVault()
   }, [])
 
-  return html` <${CardSingleSetting} title=${t('Export Vault')}>
+  return html` <${CardSingleSetting}
+    testId="settings-card-export-vault"
+    title=${t('Export Vault')}
+  >
     <${ContentContainer}>
       <${RadioSelect}
         title=${t('Choose the file format to export your Vault')}
