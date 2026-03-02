@@ -1,7 +1,7 @@
 import { html } from 'htm/react'
 import { MAX_IMPORT_RECORDS } from 'pearpass-lib-constants'
 import {
-  decryptKeepassKdbx,
+  decryptKeePassKdbx,
   parse1PasswordData,
   parseBitwardenData,
   parseKeePassData,
@@ -222,7 +222,7 @@ export const ImportTab = () => {
           throw new Error('Password is required for encrypted files')
         }
 
-        dataToProcess = await decryptKeepassKdbx(fileContent, password)
+        dataToProcess = await decryptKeePassKdbx(fileContent, password)
         type = 'keepass-kdbx'
       }
 
