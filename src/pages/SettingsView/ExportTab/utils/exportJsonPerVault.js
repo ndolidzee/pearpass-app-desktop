@@ -18,7 +18,7 @@ export const handleExportJsonPerVaultTest = async (
             encryptionPassword
           )
           return {
-            filename: vault.filename,
+            filename: vault?.filename,
             data: JSON.stringify(encryptedData, null, 2)
           }
         })
