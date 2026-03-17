@@ -1,8 +1,9 @@
-import styled from 'styled-components'
+import { DESIGN_VERSION } from 'pearpass-lib-constants'
+import styled, { css } from 'styled-components'
 
 export const PageContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -30,10 +31,17 @@ export const CardVaultActions = styled.div`
   border-radius: 20px;
   padding: 20px;
   z-index: 100;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+
+  ${DESIGN_VERSION === 2
+    ? css`
+        margin-top: 20px;
+      `
+    : css`
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      `}
 `
 
 export const ActionCardTitle = styled.p`

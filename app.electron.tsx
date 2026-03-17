@@ -1,13 +1,12 @@
 /**
  * Electron-only entry for the renderer bundle (nodeIntegration: true).
  */
-import React from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { ThemeProvider } from 'pearpass-lib-ui-theme-provider'
 import { setPearpassVaultClient, VaultProvider } from 'pearpass-lib-vault'
 import { createRoot } from 'react-dom/client'
-import { Button, ThemeProvider as UIKitProvider } from '@tetherto/pearpass-lib-ui-kit'
+import { ThemeProvider as UIKitProvider } from '@tetherto/pearpass-lib-ui-kit'
 
 import './src/strict.css'
 import { App } from './src/app/App'

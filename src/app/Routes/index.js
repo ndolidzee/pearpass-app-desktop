@@ -1,5 +1,6 @@
 import { html } from 'htm/react'
 import { AUTHENTICATOR_ENABLED } from 'pearpass-lib-constants'
+import { DESIGN_VERSION } from 'pearpass-lib-constants'
 import { OtpRefreshProvider } from 'pearpass-lib-vault'
 
 import { LayoutWithSidebar } from '../../containers/LayoutWithSidebar'
@@ -8,7 +9,9 @@ import { useRouter } from '../../context/RouterContext'
 import { AuthenticatorView } from '../../pages/AuthenticatorView'
 import { InitialPage } from '../../pages/InitialPage'
 import { Intro } from '../../pages/Intro'
+import { IntroV2 } from '../../pages/Intro/IntroV2'
 import { LoadingPage } from '../../pages/LoadingPage'
+import { LoadingPageV2 } from '../../pages/LoadingPage/LoadingPageV2'
 import { MainView } from '../../pages/MainView'
 import { SettingsView } from '../../pages/SettingsView'
 import { WelcomePage } from '../../pages/WelcomePage'
@@ -29,6 +32,9 @@ export const Routes = ({
 
   // Show InitialPage during initial splash
   if (isSplashScreenShown) {
+    if (DESIGN_VERSION === 2) {
+      return html` <${LoadingPageV2} progress=${0} /> `
+    }
     return html` <${InitialPage} /> `
   }
 
@@ -38,6 +44,9 @@ export const Routes = ({
   }
 
   if (currentPage === 'intro') {
+    if (DESIGN_VERSION === 2) {
+      return html` <${IntroV2} /> `
+    }
     return html` <${Intro} /> `
   }
 

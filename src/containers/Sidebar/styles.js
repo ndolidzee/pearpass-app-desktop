@@ -1,3 +1,4 @@
+import { DESIGN_VERSION } from 'pearpass-lib-constants'
 import styled from 'styled-components'
 
 export const SidebarWrapper = styled.div`
@@ -42,6 +43,24 @@ export const sideBarContent = styled.div`
   gap: 20px;
   min-height: 0;
   overflow: hidden;
+  ${DESIGN_VERSION === 2 &&
+  `
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    padding-bottom: 20px;
+  `}
 `
 
 export const SidebarNestedFoldersContainer = styled.div`
@@ -49,15 +68,14 @@ export const SidebarNestedFoldersContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1;
-  min-height: 0;
+  ${DESIGN_VERSION === 2 ? 'flex-shrink: 0;' : 'flex: 1; min-height: 0;'}
 `
 
 export const FoldersWrapper = styled.div`
-  overflow-y: auto;
+  overflow-y: ${DESIGN_VERSION === 2 ? 'visible' : 'auto'};
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  ${DESIGN_VERSION === 2 ? 'flex-shrink: 0;' : 'min-height: 0;'}
 `
 
 export const SidebarAuthenticatorSection = styled.div`

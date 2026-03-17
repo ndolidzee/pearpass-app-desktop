@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 
 import { html } from 'htm/react'
+import { DESIGN_VERSION } from 'pearpass-lib-constants'
 
+import { LoadingPageV2 } from './LoadingPageV2'
 import {
   BottomGlow,
   ContentContainer,
@@ -49,6 +51,10 @@ export const LoadingPage = ({ onLoadingComplete, duration = 3000 }) => {
 
     return () => clearInterval(interval)
   }, [duration, onLoadingComplete])
+
+  if (DESIGN_VERSION === 2) {
+    return html` <${LoadingPageV2} progress=${progress} /> `
+  }
 
   return html`
     <${PageContainer}>

@@ -1,11 +1,13 @@
 import React from 'react'
 
 import { html } from 'htm/react'
+import { DESIGN_VERSION } from 'pearpass-lib-constants'
 
 import { CardCreateMasterPassword } from './CardCreateMasterPassword'
 import { CardLoadVault } from './CardLoadVault'
 import { CardNewVaultCredentials } from './CardNewVaultCredentials'
 import { CardUnlockPearPass } from './CardUnlockPearPass'
+import { CardUnlockPearPassV2 } from './CardUnlockPearPassV2'
 import { CardUnlockVault } from './CardUnlockVault'
 import { CardUploadBackupFile } from './CardUploadBackupFile'
 import { CardVaultSelect } from './CardVaultSelect'
@@ -23,7 +25,7 @@ export const WelcomePage = () => {
       case NAVIGATION_ROUTES.CREATE_MASTER_PASSWORD:
         return CardCreateMasterPassword
       case NAVIGATION_ROUTES.MASTER_PASSWORD:
-        return CardUnlockPearPass
+        return DESIGN_VERSION === 2 ? CardUnlockPearPassV2 : CardUnlockPearPass
       case NAVIGATION_ROUTES.VAULTS:
         return CardVaultSelect
       case NAVIGATION_ROUTES.LOAD_VAULT:
@@ -40,6 +42,13 @@ export const WelcomePage = () => {
         return null
     }
   }, [data.state])
+
+  if (
+    DESIGN_VERSION === 2 &&
+    data.state === NAVIGATION_ROUTES.MASTER_PASSWORD
+  ) {
+    return html`<${Card} />`
+  }
 
   return html`
     <${InitialPageWrapper} isAuthScreen=${true}>
