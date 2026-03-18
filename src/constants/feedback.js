@@ -17,7 +17,7 @@ import {
   GOOGLE_FORM_MAPPING_DEVICE_MODEL,
   GOOGLE_FORM_MAPPING_MESSAGE,
   GOOGLE_FORM_MAPPING_APP_VERSION
-} from 'pearpass-lib-constants'
+} from '@tetherto/pearpass-lib-constants'
 const isDev = !Pear.config.key
 
 export const SLACK_WEBHOOK_URL_PATH = isDev
