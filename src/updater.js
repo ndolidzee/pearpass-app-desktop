@@ -1,6 +1,6 @@
-import fs from 'bare-fs'
-import os from 'bare-os'
-import path from 'bare-path'
+import os from 'os'
+import path from 'path'
+
 import FramedStream from 'framed-stream'
 import run from 'pear-run'
 import {
@@ -18,7 +18,7 @@ function getApp() {
 
     const arg = process.argv[index]
     const { appling } = JSON.parse(arg).flags || {}
-    console.log(appling, 'appling getApp')
+    console.log(appling, 'appling getApp', process, 'process')
     if (!appling) return
     if (IS_MAC) {
       return path.join(appling, '..', '..', '..') // appling path points to the bin
@@ -30,9 +30,8 @@ function getApp() {
 }
 
 async function startUpdater() {
-  const pkgPath = path.join(Pear.config.dir, 'package.json')
-  const pkgRaw = await fs.promises.readFile(pkgPath, 'utf8')
-  const pkg = JSON.parse(pkgRaw)
+  const response = await fetch('package.json')
+  const pkg = await response.json()
   const { upgrade, version, productName } = pkg
   const app = getApp()
 

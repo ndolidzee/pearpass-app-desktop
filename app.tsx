@@ -42,7 +42,7 @@ const pipe = createOrGetPipe()
 //     process.env.NODE_ENV === 'production')
 
 const client = createOrGetPearpassClient(pipe, storage, {
-  debugMode: false
+  debugMode: true
 })
 
 setPearpassVaultClient(client)
@@ -60,7 +60,7 @@ if (!container) throw new Error('Failed to find the root element')
 
 const root = createRoot(container)
 // const html = htm.bind(createElement) // Removed htm binding
-
+ 
 root.render(
   <LoadingProvider>
     <ThemeProvider>
