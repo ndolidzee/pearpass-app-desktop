@@ -18,7 +18,7 @@ function getApp() {
 
     const arg = process.argv[index]
     const { appling } = JSON.parse(arg).flags || {}
-
+    console.log(appling, 'appling getApp')
     if (!appling) return
     if (IS_MAC) {
       return path.join(appling, '..', '..', '..') // appling path points to the bin
@@ -61,6 +61,7 @@ async function startUpdater() {
 
   pipe.on('data', (data) => {
     const event = Buffer.from(data).toString()
+    console.log(event, 'event')
     if (event === events.UPDATING) Pear.message(PEAR_RUNTIME_UPDATING_MESSAGE)
     if (event === events.UPDATED) Pear.message(PEAR_RUNTIME_UPDATED_MESSAGE)
   })

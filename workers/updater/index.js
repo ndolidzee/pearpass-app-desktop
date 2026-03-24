@@ -23,10 +23,12 @@ updater.on('error', (err) => {
 })
 
 updater.on('updating', () => {
+  console.log('updating')
   pipe.write(events.UPDATING)
 })
 
 updater.on('updated', async () => {
+  console.log('updated')
   await updater.applyUpdate()
   pipe.write(events.UPDATED)
 })
