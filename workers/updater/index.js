@@ -10,7 +10,7 @@ const opts = {
   app: Pear.config.args[3] !== 'undefined' ? Pear.config.args[3] : undefined,
   name: Pear.config.args[4]
 }
-
+console.log(opts, 'opts')
 const updater = new PearRuntimeUpdater(opts)
 
 const events = {
