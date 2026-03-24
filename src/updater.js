@@ -61,6 +61,7 @@ async function startUpdater() {
 
   pipe.on('data', (data) => {
     const event = Buffer.from(data).toString()
+    console.log(event, 'event')
     if (event === events.UPDATING) Pear.message(PEAR_RUNTIME_UPDATING_MESSAGE)
     if (event === events.UPDATED) Pear.message(PEAR_RUNTIME_UPDATED_MESSAGE)
   })
