@@ -109,7 +109,6 @@
     "bare-subprocess": "5.2.1",
     "buffer": "6.0.3",
     "compact-encoding": "2.18.0",
-    "create-dmg": "^8.1.0",
     "dotenv": "17.2.1",
     "framed-stream": "^1.0.1",
     "htm": "3.1.1",
@@ -140,6 +139,9 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "styled-components": "6.1.19"
+  },
+  "optionalDependencies": {
+    "create-dmg": "^8.1.0"
   },
   "overrides": {
     "@xmldom/xmldom": "^0.8.10",
