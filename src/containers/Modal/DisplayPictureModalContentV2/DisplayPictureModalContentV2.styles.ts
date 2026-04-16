@@ -1,7 +1,6 @@
-import type { ThemeColors } from '@tetherto/pearpass-lib-ui-kit'
 import { rawTokens } from '@tetherto/pearpass-lib-ui-kit'
 
-export const createStyles = (_colors: ThemeColors) => ({
+export const createStyles = () => ({
   body: {
     display: 'flex' as const,
     alignItems: 'center' as const,
