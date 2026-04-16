@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { Button, Dialog, useTheme } from '@tetherto/pearpass-lib-ui-kit'
+import { Button, Dialog } from '@tetherto/pearpass-lib-ui-kit'
 import { Download } from '@tetherto/pearpass-lib-ui-kit/icons'
 
 import { createStyles } from './DisplayPictureModalContentV2.styles'
 import { useModal } from '../../../context/ModalContext'
 import { useTranslation } from '../../../hooks/useTranslation'
 
-export type DisplayPictureModalContentV2Props = {
+export interface DisplayPictureModalContentV2Props {
   url: string
   name: string
 }
@@ -17,8 +17,7 @@ export const DisplayPictureModalContentV2 = ({
   name
 }: DisplayPictureModalContentV2Props) => {
   const { t } = useTranslation()
-  const { theme } = useTheme()
-  const styles = createStyles(theme.colors)
+  const styles = createStyles()
   const { closeModal } = useModal()
 
   const handleDownload = () => {
