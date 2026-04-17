@@ -115,6 +115,7 @@ export const createStyles = (colors: ThemeColors) => ({
 
   contentArea: {
     flex: 1,
+    padding: `${rawTokens.spacing20}px`,
     overflow: 'auto' as const,
     minWidth: 0
   }
