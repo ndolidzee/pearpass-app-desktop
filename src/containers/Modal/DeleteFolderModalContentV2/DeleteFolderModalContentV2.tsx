@@ -21,6 +21,11 @@ interface DeleteFolderModalContentV2Props {
   onClose: () => void
 }
 
+enum DeleteOption {
+  DeleteFolder = 'deleteFolder',
+  DeleteFolderAndItems = 'deleteFolderAndItems'
+}
+
 export const DeleteFolderModalContentV2 = ({
   folderName,
   count,
@@ -38,9 +43,9 @@ export const DeleteFolderModalContentV2 = ({
   const { deleteFolder, data: folderData } = useFolders()
   const { updateRecords } = useRecords()
 
-  const [selected, setSelected] = useState<
-    'deleteFolder' | 'deleteFolderAndItems'
-  >('deleteFolderAndItems')
+  const [selected, setSelected] = useState<DeleteOption>(
+    DeleteOption.DeleteFolderAndItems
+  )
 
   const handleClose = () => {
     onClose()
@@ -53,7 +58,7 @@ export const DeleteFolderModalContentV2 = ({
   }
 
   const handleDelete = async () => {
-    if (selected === 'deleteFolder') {
+    if (selected === DeleteOption.DeleteFolder) {
       const folderRecords: { folder?: string | null }[] =
         folderData?.customFolders?.[folderName]?.records ?? []
       await updateRecords(folderRecords.map((r) => ({ ...r, folder: null })))
@@ -69,7 +74,7 @@ export const DeleteFolderModalContentV2 = ({
     ...(!UNSUPPORTED
       ? [
           {
-            value: 'deleteFolder',
+            value: DeleteOption.DeleteFolder,
             label: t('Delete Folder'),
             description: t(
               'Only the folder will be removed. Your items will be moved to the All Folder list.'
@@ -78,7 +83,7 @@ export const DeleteFolderModalContentV2 = ({
         ]
       : []),
     {
-      value: 'deleteFolderAndItems',
+      value: DeleteOption.DeleteFolderAndItems,
       label: t('Delete folder and items'),
       description: t(
         'This will permanently remove the folder and all {count} items inside. This action cannot be undone.',
@@ -87,7 +92,8 @@ export const DeleteFolderModalContentV2 = ({
     }
   ]
 
-  const isDeleteFolderOnlySelected = !UNSUPPORTED && selected === 'deleteFolder'
+  const isDeleteFolderOnlySelected =
+    !UNSUPPORTED && selected === DeleteOption.DeleteFolder
 
   return (
     <Dialog
@@ -137,9 +143,7 @@ export const DeleteFolderModalContentV2 = ({
         <Radio
           options={options}
           value={selected}
-          onChange={(value) =>
-            setSelected(value as 'deleteFolder' | 'deleteFolderAndItems')
-          }
+          onChange={(value) => setSelected(value as DeleteOption)}
           testID="deletefolder-radio-v2"
         />
       </div>
