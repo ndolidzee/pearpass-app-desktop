@@ -16,7 +16,7 @@ async function preflight(id) {
   let platform
   try {
     platform = await appling.resolve() //lock.dir if infinite loop
-  } catch (err) {
+  } catch {
     // Platform not found - installation required
     return { lock, needsInstall: true, launched: false }
   }

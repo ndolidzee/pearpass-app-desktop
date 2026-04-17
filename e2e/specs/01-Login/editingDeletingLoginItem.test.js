@@ -9,159 +9,114 @@ import {
   DetailsPage
 } from '../../components/index.js';
 import testData from '../../fixtures/test-data.js';
+import { qase } from 'playwright-qase-reporter';
 
 test.describe('Editing/Deleting Login Item', () => {
-  test.describe.configure({ mode: 'serial' })
+  test.describe.configure({ mode: 'serial' });
 
-  let loginPage, vaultSelectPage, createOrEditPage, sideMenuPage, mainPage, utilities, detailsPage, page
+  let loginPage, vaultSelectPage, createOrEditPage, sideMenuPage, mainPage, utilities, detailsPage, page;
+
+  test.beforeAll(async ({ app }) => {
+    page = await app.getPage();
+    const root = page.locator('body');
+
+    loginPage = new LoginPage(root);
+    vaultSelectPage = new VaultSelectPage(root);
+    mainPage = new MainPage(root);
+    sideMenuPage = new SideMenuPage(root);
+    createOrEditPage = new CreateOrEditPage(root);
+    utilities = new Utilities(root);
+    detailsPage = new DetailsPage(root);
+
+    await loginPage.loginToApplication(testData.credentials.validPassword);
+    await vaultSelectPage.selectVaultbyName(testData.vault.name);
+
+    await sideMenuPage.selectSideBarCategory('login');
+    await utilities.deleteAllElements();
+    await mainPage.clickCreateNewElementButton('Create a login');
+
+    await createOrEditPage.fillCreateOrEditInput('title', 'Login Title');
+    await createOrEditPage.fillCreateOrEditInput('username', 'Test User');
+    await createOrEditPage.fillCreateOrEditInput('password', 'Test Pass');
+    await createOrEditPage.fillCreateOrEditInput('website', 'https://www.website.co');
+    await createOrEditPage.fillCreateOrEditInput('note', 'Test Note');
+    await createOrEditPage.clickOnCreateOrEditButton('save');
+
+    await page.waitForTimeout(testData.timeouts.action);
+  });
 
   test.beforeEach(async ({ app }) => {
-    page = await app.getPage()
-    const root = page.locator('body')
-    loginPage = new LoginPage(root)
-    vaultSelectPage = new VaultSelectPage(root)
-    mainPage = new MainPage(root)
-    sideMenuPage = new SideMenuPage(root)
-    createOrEditPage = new CreateOrEditPage(root)
-    utilities = new Utilities(root)
-    detailsPage = new DetailsPage(root)
+    page = await app.getPage();
+    const root = page.locator('body');
+    loginPage = new LoginPage(root);
+    vaultSelectPage = new VaultSelectPage(root);
+    mainPage = new MainPage(root);
+    sideMenuPage = new SideMenuPage(root);
+    createOrEditPage = new CreateOrEditPage(root);
+    utilities = new Utilities(root);
+    detailsPage = new DetailsPage(root);
+  });
 
-    await loginPage.loginToApplication(testData.credentials.validPassword)
-    await vaultSelectPage.selectVaultbyName(testData.vault.name)
-  })
-
-  test.afterAll(async ({ app }) => {
+  test.afterAll(async () => {
     await utilities.deleteAllElements()
     await sideMenuPage.clickSidebarExitButton()
-  })
+  });
 
-  test('Create/Edit/Delete Login item', async ({ page }) => {
+  test('Verify that edited "Login" item fields are saved correctly', async () => {
+    qase.id(2034);
+    await mainPage.openElementDetails();
+    await detailsPage.editElement();
+    await createOrEditPage.fillCreateOrEditInput('title', 'Login Title EDITED');
+    await createOrEditPage.fillCreateOrEditInput('username', 'Test User EDITED');
+    await createOrEditPage.fillCreateOrEditInput('password', 'Test Pass EDITED');
+    await createOrEditPage.fillCreateOrEditInput('website', 'https://www.website1.co');
+    await createOrEditPage.fillCreateOrEditInput('note', 'Test Note EDITED');
+    await createOrEditPage.clickOnCreateOrEditButton('save');
+    await page.waitForTimeout(testData.timeouts.action);
+    await mainPage.openElementDetails();
+    await detailsPage.verifyItemDetailsValue('Email or username', 'Test User EDITED');
+    await detailsPage.verifyItemDetailsValue('Password', 'Test Pass EDITED');
+    await detailsPage.verifyItemDetailsValue('https://', 'https://www.website1.co');
+    await detailsPage.verifyItemDetailsValue('Add comment', 'Test Note EDITED');
+  });
 
-    await test.step('CREATE LOGIN ELEMENT - initial empty element collection', async () => {
-      await sideMenuPage.selectSideBarCategory('login')
-      await utilities.deleteAllElements()
-      await mainPage.clickCreateNewElementButton('Create a login')
+  test('Verify that deleted "Website" and custom "Note" fields are not saved in the edited "Login" item', async () => {
+    qase.id(2035);
+    await detailsPage.editElement();
+    await createOrEditPage.clickOnCreateOrEditButton('addwebsite');
+    await createOrEditPage.clickOnCreateOrEditButton('removewebsite');
+    await createOrEditPage.clickCreateCustomItem();
+    await createOrEditPage.clickCustomItemOptionNote();
+    await expect(createOrEditPage.customNoteInput).toHaveCount(1);
+    await createOrEditPage.deleteCustomNote();
+    await expect(createOrEditPage.customNoteInput).toHaveCount(0);
+  });
 
-      await createOrEditPage.fillCreateOrEditInput('title', 'Login Title')
+  test('Empty fields are not displayed in view mode', async () => {
+    qase.id(2036);
+    await createOrEditPage.fillCreateOrEditInput('username', '');
+    await createOrEditPage.fillCreateOrEditInput('password', '');
+    await createOrEditPage.fillCreateOrEditInput('website', '');
+    await createOrEditPage.fillCreateOrEditInput('note', '');
+    await createOrEditPage.clickOnCreateOrEditButton('save');
+    await mainPage.openElementDetails();
+    await detailsPage.verifyItemDetailsValue('https://', '');
+    await detailsPage.verifyItemDetailsValueIsNotVisible('Email or username');
+    await detailsPage.verifyItemDetailsValueIsNotVisible('Password');
+    await detailsPage.verifyItemDetailsValueIsNotVisible('Add comment');
+    await mainPage.clickDetailsCloseButton();
+  });
 
-      await createOrEditPage.fillCreateOrEditInput('username', 'Test User')
-      await createOrEditPage.fillCreateOrEditInput('password', 'Test Pass')
-      await createOrEditPage.fillCreateOrEditInput('website', 'https://www.website.co')
-      await createOrEditPage.fillCreateOrEditInput('note', 'Test Note')
+  test('Verify that the "Login" item is removed after deletion', async () => {
+    qase.id(2037);
+    await utilities.deleteAllElements()
+    await mainPage.verifyElementIsNotVisible();
+  });
 
-      await createOrEditPage.clickOnCreateOrEditButton('save')
-      await page.waitForTimeout(testData.timeouts.action)
+  test('Verify that the empty collection view is displayed on the Home screen after deleting the last item', async () => {
+    qase.id(2037);
+    await sideMenuPage.selectSideBarCategory('all');
+    await expect(mainPage.emptyCollectionView).toBeVisible();
+  });
 
-    })
-
-    await test.step('OPEN ELEMENT', async () => {
-      await mainPage.openElementDetails()
-    })
-
-    await test.step('EDIT ELEMENT DETAILS', async () => {
-      await detailsPage.editElement()
-    })
-
-    await test.step('EDIT LOGIN ELEMENT', async () => {
-      await createOrEditPage.fillCreateOrEditInput('title', 'Login Title EDITED')
-
-      await createOrEditPage.fillCreateOrEditInput('username', 'Test User EDITED')
-      await createOrEditPage.fillCreateOrEditInput('password', 'Test Pass EDITED')
-      await createOrEditPage.fillCreateOrEditInput('website', 'https://www.website1.co')
-      await createOrEditPage.fillCreateOrEditInput('note', 'Test Note EDITED')
-
-      await createOrEditPage.clickOnCreateOrEditButton('save')
-      await page.waitForTimeout(testData.timeouts.action)
-    })
-
-    await test.step('OPEN ELEMENT)', async () => {
-      await mainPage.openElementDetails()
-    })
-
-    /**
-     * @qase.id PAS-583
-     * @description Changes after editing all "Login" item fields including folder destination correspond to entered fields' values
-     */
-    await test.step('VERIFY EDITED LOGIN DETAILS', async () => {
-      await detailsPage.verifyItemDetailsValue('Email or username', 'Test User EDITED')
-      await detailsPage.verifyItemDetailsValue('Password', 'Test Pass EDITED')
-      await detailsPage.verifyItemDetailsValue('https://', 'https://www.website1.co')
-      await detailsPage.verifyItemDetailsValue('Add note', 'Test Note EDITED')
-    })
-
-    await test.step('EDIT ELEMENT DETAILS', async () => {
-      await detailsPage.editElement()
-    })
-
-    /**
-     * @qase.id PAS-584
-     * @description Additional "Website" and custom "Note" fields are deleted after deleting them during editing "Login" item
-     */
-    await test.step('EDIT LOGIN ELEMENT - Add Website/Custom Note item and delete them during editing "Login" item', async () => {
-      await createOrEditPage.clickOnCreateOrEditButton('addwebsite')
-      // await createOrEditPage.countItems('https://', 3)
-      await createOrEditPage.clickOnCreateOrEditButton('removewebsite')
-      // await createOrEditPage.countItems('https://', 2)
-
-      await createOrEditPage.clickCreateCustomItem()
-      await createOrEditPage.clickCustomItemOptionNote()
-      await expect(createOrEditPage.customNoteInput).toHaveCount(1);
-      await createOrEditPage.deleteCustomNote();
-      await expect(createOrEditPage.customNoteInput).toHaveCount(0);
-    })
-
-    await test.step('EDIT LOGIN ELEMENT - delete all items fields except title', async () => {
-      await createOrEditPage.fillCreateOrEditInput('username', '')
-      await createOrEditPage.fillCreateOrEditInput('password', '')
-      await createOrEditPage.fillCreateOrEditInput('website', '')
-      await createOrEditPage.fillCreateOrEditInput('note', '')
-
-      await createOrEditPage.clickOnCreateOrEditButton('save')
-    })
-
-    await test.step('OPEN ELEMENT', async () => {
-      await mainPage.openElementDetails()
-    })
-
-    /**
-     * @qase.id PAS-575
-     * @description Empty fields are not displayed in view mode
-     */
-    await test.step('VERIFY LOGIN ELEMENT EDITED AND EMPTY EXCEPT WEBSITE', async () => {
-      await detailsPage.verifyItemDetailsValue('https://', '')
-      await detailsPage.verifyItemDetailsValueIsNotVisible('Email or username')
-      await detailsPage.verifyItemDetailsValueIsNotVisible('Password')
-      await detailsPage.verifyItemDetailsValueIsNotVisible('Add note')
-    })
-
-    await test.step('CLOSE DETAILS', async () => {
-      await mainPage.clickDetailsCloseButton()
-    })
-
-    /**
-     * @qase.id PAS-585
-     * @description "Login" item is deleted after deleting it
-     */
-    await test.step('DELETE LOGIN ITEM', async () => {
-      await utilities.deleteAllElements()
-      // await detailsPage.openItemBarThreeDotsDropdownMenu()
-      // await detailsPage.clickDeleteElement()
-      // await detailsPage.clickConfirmYes()
-    })
-
-    await test.step('VERIFY LOGIN ELEMENT IS NOT VISIBLE', async () => {
-      await mainPage.verifyElementIsNotVisible()
-    })
-
-    /**
-     * @qase.id PAS-1240
-     * @description All items are displayed on the Home screen after deleting an item
-     */
-    await test.step('VERIFY COLLECTION IS EMPTY', async () => {
-      await sideMenuPage.selectSideBarCategory('all')
-      await expect(mainPage.emptyCollectionView).toBeVisible()
-    })
-
-  })
-
-})
+});

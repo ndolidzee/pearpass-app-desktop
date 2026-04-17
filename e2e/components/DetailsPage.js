@@ -7,6 +7,15 @@ class DetailsPage {
 
     // ==== LOCATORS ====
 
+    get getItemDetailsCustomInput() {
+        return this.root.getByPlaceholder('Add comment');
+    }
+
+    async verifyCustomNoteText(expectedText) {
+        await expect(this.getItemDetailsCustomInput).toBeVisible()
+        await expect(this.getItemDetailsCustomInput).toHaveValue(expectedText)
+    }
+
     get getItemDetailsTitle() {
         return this.root.locator('[data-testid^="details-title"]');
     }
@@ -91,7 +100,7 @@ class DetailsPage {
     }
 
     get elementItemCloseButton() {
-        return this.root.getByTestId('modalheader-button-close').last()
+        return this.root.getByTestId('modalheader-button-close').last() //modalheader-button-close
     }
 
     get createNewFolderButton() {
@@ -188,17 +197,6 @@ class DetailsPage {
         const yesButton = this.root.getByText('Yes')
         await expect(yesButton).toBeVisible()
         await yesButton.click()
-    }
-
-    async deleteElementFromDetails() {
-        while (!(await this.collectionEmptyText.isVisible())) {
-            await this.element.first().click();
-            await this.itemBarThreeDots.click();
-            await this.deleteElementButton.click();
-            await this.root.getByText('Yes').click();
-
-            await expect(this.collectionEmptyText).toBeVisible({ timeout: 5000 }).catch(() => { });
-        }
     }
 
     async clickShowHidePasswordButton() {

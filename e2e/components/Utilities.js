@@ -17,6 +17,7 @@ class Utilities {
 
   get deleteElementButton() {
     return this.root.getByText('Delete element').last()
+    // return this.root.getByTestId('recordaction-item-delete')
   }
 
   get collectionEmptyText() {
@@ -37,26 +38,49 @@ class Utilities {
     return this.root.getByTestId('recordaction-item-delete').first()
   }
 
+  get detailsHeader() {
+    return this.root.getByTestId('details-header')
+  }
+
   // ==== ACTIONS ====
 
   async deleteAllElements() {
-    while (await this.listItemThreeDots.isVisible()) {
-      await this.listItemThreeDots.click()
-      await this.listItemThreeDotsMenuDeleteItem.click()
-      await this.root.getByText('Yes').click()
+    const firstElement = this.root.getByTestId('recordList-record-container').first();
+    const emptyText = this.collectionEmptyText;
 
-      await expect(this.collectionEmptyText)
-        .toBeVisible({ timeout: 5000 })
-        .catch(() => {})
+    while (true) {
+      const emptyVisible = await emptyText.isVisible().catch(() => false);
+      if (emptyVisible) break;
+
+      const elementVisible = await firstElement.isVisible({ timeout: 3000 }).catch(() => false);
+      if (!elementVisible) break;
+
+      await firstElement.click();
+
+      await expect(this.detailsHeader).toBeVisible({ timeout: 5000 });
+
+      await this.itemBarThreeDots.click();
+
+      await expect(this.deleteElementButton).toBeVisible({ timeout: 5000 });
+      await this.deleteElementButton.click();
+
+      await this.root.getByText('Yes').click();
+
+      await expect(emptyText).toBeVisible({ timeout: 5000 }).catch(() => { });
     }
   }
 
-  // async deleteAllElements() {
-  //   while (!(await this.collectionEmptyText.isVisible())) {
-  //     // await expect(this.listItemThreeDots).toBeVisible()
-  //     await this.listItemThreeDots.click();
-  //     await this.listItemThreeDotsMenuDeleteItem.click();
-  //     await this.root.getByText('Yes').click();
+  async pasteFromClipboard(locator, text) {
+    // Write text to clipboard
+    await this.root.page().evaluate(async (t) => {
+      await navigator.clipboard.writeText(t)
+    }, text)
+
+    // Click and paste
+    await locator.click()
+    const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+    await this.root.page().keyboard.press(`${modifier}+v`)
+  }
 
   //     await expect(this.collectionEmptyText).toBeVisible({ timeout: 5000 }).catch(() => { });
   //   }

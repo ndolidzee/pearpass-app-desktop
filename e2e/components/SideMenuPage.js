@@ -51,6 +51,7 @@ class SideMenuPage {
   async selectSideBarCategory(name) {
     const category = this.getSidebarCategory(name)
     await expect(category).toBeVisible()
+    await expect(category).toBeEnabled()
     await category.click()
   }
 
@@ -66,7 +67,7 @@ class SideMenuPage {
       .click()
 
     const deleteButton = folder
-      .locator('..') // parent container
+      .locator('..')
       .getByText('Delete', { exact: true })
     await deleteButton.click()
     await expect(this.confirmButton).toBeVisible()
