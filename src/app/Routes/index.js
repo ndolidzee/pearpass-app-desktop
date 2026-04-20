@@ -59,7 +59,7 @@ export const Routes = ({
     if (isV2()) {
       return <SettingsViewV2 />
     } else {
-      return html` <${SettingsView} /> `
+      return <SettingsView />
     }
   }
 
