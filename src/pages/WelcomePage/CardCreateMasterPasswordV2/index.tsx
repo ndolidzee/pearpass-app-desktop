@@ -11,12 +11,19 @@ import {
 } from '@tetherto/pearpass-lib-vault/src/utils/buffer'
 // @ts-ignore - JS module without type declarations
 import { checkPasswordStrength } from '@tetherto/pearpass-utils-password-check'
-import { AlertMessage, Button, Form, Link, PasswordField, Text, Title } from '@tetherto/pearpass-lib-ui-kit'
+import {
+  AlertMessage,
+  Button,
+  Form,
+  Link,
+  PasswordField,
+  Text,
+  Title
+} from '@tetherto/pearpass-lib-ui-kit'
 import type { PasswordIndicatorVariant } from '@tetherto/pearpass-lib-ui-kit'
 import {
   KeyboardArrowRightFilled,
-  InfoOutlined,
-  ReportProblemRound
+  InfoOutlined
 } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { useTheme } from '@tetherto/pearpass-lib-ui-kit'
 
@@ -69,9 +76,8 @@ export const CardCreateMasterPasswordV2 = () => {
     values.password === values.passwordConfirm
   const isFormValid = isPasswordStrong && passwordsMatch
 
-  const passwordIndicator: PasswordIndicatorVariant | undefined = passwordStrength
-    ? STRENGTH_MAP[passwordStrength.strengthType]
-    : undefined
+  const passwordIndicator: PasswordIndicatorVariant | undefined =
+    passwordStrength ? STRENGTH_MAP[passwordStrength.strengthType] : undefined
 
   const handlePasswordChange = (val: string) => {
     register('password').onChange(val)
@@ -161,7 +167,7 @@ export const CardCreateMasterPasswordV2 = () => {
                 </div>
                 <Text as="span" variant="caption">
                   {t(
-                    'Strong passwords are usually at least 8 characters long, hard to guess, use a mix of letters, numbers, and symbols, and aren\'t based on personal information.'
+                    "Strong passwords are usually at least 8 characters long, hard to guess, use a mix of letters, numbers, and symbols, and aren't based on personal information."
                   )}
                 </Text>
               </div>
@@ -185,7 +191,6 @@ export const CardCreateMasterPasswordV2 = () => {
               description={t(
                 "Don't forget your Master password. It's the only way to access your vault. We can't help recover it. Back it up securely."
               )}
-              icon={<ReportProblemRound width={16} height={16} />}
             />
           )}
         </div>
@@ -193,7 +198,11 @@ export const CardCreateMasterPasswordV2 = () => {
         <div style={styles.footerRow}>
           <div style={styles.touContainer}>
             {/* @ts-ignore */}
-            <Text as="span" variant="caption" style={styles.touText}>{t('By clicking Continue, you confirm that you have read and agree to the ')}</Text>{' '}
+            <Text as="span" variant="caption" style={styles.touText}>
+              {t(
+                'By clicking Continue, you confirm that you have read and agree to the '
+              )}
+            </Text>{' '}
             <Link
               // @ts-ignore - plain CSS object
               style={styles.touLink}

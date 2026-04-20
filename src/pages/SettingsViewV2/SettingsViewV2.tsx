@@ -30,6 +30,7 @@ import {
 import { useRouter } from '../../context/RouterContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { createStyles } from './SettingsViewV2.styles'
+import { MasterPasswordContent } from './content/MasterPasswordContent'
 
 export enum SettingsItemKey {
   AppPreferences = 'app-preferences',
@@ -61,6 +62,8 @@ const renderActiveContent = (
   activeItemKey: SettingsItemKey
 ): React.ReactNode => {
   switch (activeItemKey) {
+    case SettingsItemKey.MasterPassword:
+      return <MasterPasswordContent />
     default:
       return null
   }
