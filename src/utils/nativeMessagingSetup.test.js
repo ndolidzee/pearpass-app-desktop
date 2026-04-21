@@ -204,7 +204,9 @@ describe('getNativeMessagingLocations', () => {
     expect(browsers[5].name).toBe('Brave (Snap)')
     expect(browsers[5].manifestPath).toContain('snap/brave/current')
     expect(browsers[6].name).toBe('Firefox')
-    expect(browsers[6].manifestPath).toContain('.mozilla/native-messaging-hosts')
+    expect(browsers[6].manifestPath).toContain(
+      '.mozilla/native-messaging-hosts'
+    )
   })
 
   it('should return correct browser entries with registry keys for Windows', () => {
