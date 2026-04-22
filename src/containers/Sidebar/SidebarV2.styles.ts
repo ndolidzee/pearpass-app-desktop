@@ -41,6 +41,7 @@ export const createStyles = (colors: ThemeColors, isCollapsed: boolean) => ({
     alignItems: 'center' as const,
     gap: rawTokens.spacing4,
     minWidth: 0,
+    cursor: 'pointer' as const,
     userSelect: 'none' as const
   },
 
@@ -116,6 +117,7 @@ export const createStyles = (colors: ThemeColors, isCollapsed: boolean) => ({
     alignItems: 'center' as const,
     justifyContent: isCollapsed ? ('center' as const) : ('flex-start' as const),
     gap: rawTokens.spacing4,
+    cursor: 'pointer' as const,
     userSelect: 'none' as const
   },
 

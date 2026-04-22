@@ -16,21 +16,22 @@ import {
 } from '@tetherto/pearpass-lib-ui-kit'
 import { Pressable } from '@tetherto/pearpass-lib-ui-kit/components/Pressable'
 import {
-  Add,
   Close,
   CreateNewFolder,
   ExpandMore,
-  Layers,
   LockFilled,
   LockOutlined,
   MenuOpen,
   SettingsOutlined,
   StarBorder,
   StarFilled,
-  TwoFactorAuthenticationOutlined
+  TwoFactorAuthenticationOutlined,
+  Folder,
+  FolderCopy
 } from '@tetherto/pearpass-lib-ui-kit/icons'
 
 import { createStyles } from './SidebarV2.styles'
+import { VaultSelector } from './VaultSelector/VaultSelector'
 import { NAVIGATION_ROUTES } from '../../constants/navigation'
 import { useLoadingContext } from '../../context/LoadingContext'
 import { useModal } from '../../context/ModalContext'
@@ -182,23 +183,6 @@ export const SidebarV2 = () => {
     )
   }
 
-  const renderVaultListHeader = () => (
-    <div style={styles.foldersHeader}>
-      <div style={{ flex: 1 }}>
-        <Text variant="labelEmphasized" color={theme.colors.colorTextSecondary}>
-          {t('Vaults')}
-        </Text>
-      </div>
-      <Button
-        variant="tertiary"
-        size="small"
-        data-testid="sidebar-vault-add"
-        aria-label={t('Add vault')}
-        iconBefore={<Add style={iconTextSecondary} />}
-      />
-    </div>
-  )
-
   return (
     <aside style={styles.wrapper} data-testid="sidebar-v2">
       {isCollapsed ? (
@@ -208,7 +192,9 @@ export const SidebarV2 = () => {
       )}
 
       <div style={styles.scrollArea}>
-        {isVaultSelectorOpen && renderVaultListHeader()}
+        {isVaultSelectorOpen && (
+          <VaultSelector onClose={() => setIsVaultSelectorOpen(false)} />
+        )}
 
         {!isVaultSelectorOpen && (
           <>
@@ -290,7 +276,7 @@ export const SidebarV2 = () => {
                 variant={isAllFoldersActive ? 'default' : 'secondary'}
                 size="small"
                 icon={
-                  <Layers
+                  <FolderCopy
                     color={
                       isAllFoldersActive
                         ? theme.colors.colorTextPrimary
@@ -331,7 +317,7 @@ export const SidebarV2 = () => {
                     variant={selected ? 'default' : 'secondary'}
                     size="small"
                     icon={
-                      <Layers
+                      <Folder
                         color={
                           selected
                             ? theme.colors.colorTextPrimary
