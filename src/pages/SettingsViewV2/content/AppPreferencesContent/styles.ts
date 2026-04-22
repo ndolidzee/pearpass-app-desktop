@@ -51,16 +51,5 @@ export const createStyles = (colors: ThemeColors) => ({
     gap: `${rawTokens.spacing4}px`,
     flex: 1,
     minWidth: 0
-  },
-
-  dropdownMenu: {
-    display: 'flex' as const,
-    flexDirection: 'column' as const,
-    backgroundColor: colors.colorSurfacePrimary,
-    borderRadius: `${rawTokens.radius8}px`,
-    borderWidth: 1,
-    borderStyle: 'solid' as const,
-    borderColor: colors.colorBorderPrimary,
-    overflow: 'hidden' as const
   }
 })

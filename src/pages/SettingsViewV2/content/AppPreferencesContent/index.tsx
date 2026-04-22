@@ -3,9 +3,9 @@ import React, { useCallback, useMemo, useState } from 'react'
 import {
   Button,
   Dropdown,
-  ListItem,
+  NavbarListItem,
+  PageHeader,
   Text,
-  Title,
   ToggleSwitch,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
@@ -89,10 +89,11 @@ export const AppPreferencesContent = () => {
 
   return (
     <div data-testid={TEST_IDS.root} style={styles.root}>
-      <Title as="h1">{t('App Preferences')}</Title>
-      <Text variant="label" color={colors.colorTextSecondary}>
-        {t('Control how PearPass works and keep your vault secure.')}
-      </Text>
+      <PageHeader
+        as="h1"
+        title={t('App Preferences')}
+        subtitle={t('Control how PearPass works and keep your vault secure.')}
+      />
 
       <div style={styles.sectionHeading}>
         <Text variant="caption" color={colors.colorTextSecondary}>
@@ -125,17 +126,15 @@ export const AppPreferencesContent = () => {
                 </Button>
               }
             >
-              <div style={styles.dropdownMenu}>
-                {translatedTimeoutOptions.map((option) => (
-                  <ListItem
-                    key={option.key}
-                    testID={`${TEST_IDS.autoLockOption}-${option.key.toLowerCase()}`}
-                    title={option.label}
-                    selected={option.value === timeoutMs}
-                    onClick={() => handleTimeoutSelect(option)}
-                  />
-                ))}
-              </div>
+              {translatedTimeoutOptions.map((option) => (
+                <NavbarListItem
+                  key={option.key}
+                  testID={`${TEST_IDS.autoLockOption}-${option.key.toLowerCase()}`}
+                  label={option.label}
+                  selected={option.value === timeoutMs}
+                  onClick={() => handleTimeoutSelect(option)}
+                />
+              ))}
             </Dropdown>
           </div>
         )}

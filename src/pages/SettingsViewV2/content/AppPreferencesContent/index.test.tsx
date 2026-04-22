@@ -47,8 +47,7 @@ jest.mock('./styles', () => ({
     settingCard: {},
     row: {},
     rowDivider: {},
-    toggleColumn: {},
-    dropdownMenu: {}
+    toggleColumn: {}
   })
 }))
 
@@ -65,7 +64,12 @@ const mockTheme = {
 
 jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
   useTheme: () => mockTheme,
-  Title: ({ children }: { children: React.ReactNode }) => <h1>{children}</h1>,
+  PageHeader: (props: { title: string; subtitle?: React.ReactNode }) => (
+    <div>
+      <h1>{props.title}</h1>
+      {props.subtitle && <div>{props.subtitle}</div>}
+    </div>
+  ),
   Text: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ToggleSwitch: (props: {
     'data-testid'?: string
@@ -113,9 +117,9 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
       {props.open ? <div data-testid="dropdown-menu">{props.children}</div> : null}
     </div>
   ),
-  ListItem: (props: {
+  NavbarListItem: (props: {
     testID?: string
-    title: string
+    label?: string
     selected?: boolean
     onClick?: () => void
   }) => (
@@ -125,7 +129,7 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
       aria-pressed={props.selected}
       onClick={props.onClick}
     >
-      {props.title}
+      {props.label}
     </button>
   )
 }))
