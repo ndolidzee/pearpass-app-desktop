@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
 
 import {
+  Button,
   Link,
   PageHeader,
   Text,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
-import { PRIVACY_POLICY, TERMS_OF_USE } from '@tetherto/pearpass-lib-constants'
+import {
+  PEARPASS_WEBSITE,
+  PRIVACY_POLICY,
+  TERMS_OF_USE
+} from '@tetherto/pearpass-lib-constants'
 
 import { useToast } from '../../../../context/ToastContext'
 import { useTranslation } from '../../../../hooks/useTranslation'
 import { logger } from '../../../../utils/logger'
 import { createStyles } from './styles'
-
-const WEBSITE_URL = 'https://pass.pears.com'
 
 const TEST_IDS = {
   root: 'settings-app-version',
@@ -102,7 +105,7 @@ export const AppVersionContent = (): React.ReactElement => {
             </Link>{' '}
             {t('and')}{' '}
             {/* @ts-ignore - plain CSS object */}
-            <Link href={WEBSITE_URL} isExternal style={styles.descriptionLink}>
+            <Link href={PEARPASS_WEBSITE} isExternal style={styles.descriptionLink}>
               {t('visit our website')}
             </Link>
             .
@@ -119,15 +122,15 @@ export const AppVersionContent = (): React.ReactElement => {
         </Text>
       </div>
 
-      <button
-        type="button"
-        style={styles.checkForUpdatesButton}
-        disabled={isChecking}
+      <Button
+        variant="primary"
+        size="small"
+        isLoading={isChecking}
         onClick={handleCheckForUpdates}
         data-testid={TEST_IDS.checkForUpdates}
       >
-        {isChecking ? t('Checking…') : t('Check for updates')}
-      </button>
+        {t('Check for updates')}
+      </Button>
     </div>
   )
 }

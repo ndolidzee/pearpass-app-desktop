@@ -31,17 +31,5 @@ export const createStyles = (colors: ThemeColors) => ({
     justifyContent: 'center' as const,
     gap: `${rawTokens.spacing4}px`,
     minWidth: 0
-  },
-
-  dropdownTrigger: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: `${rawTokens.spacing8}px`,
-    padding: `${rawTokens.spacing12}px`,
-    border: `1px solid ${colors.colorBorderPrimary}`,
-    borderRadius: `${rawTokens.radius8}px`,
-    background: 'transparent',
-    color: colors.colorTextPrimary,
-    cursor: 'pointer' as const
   }
 })

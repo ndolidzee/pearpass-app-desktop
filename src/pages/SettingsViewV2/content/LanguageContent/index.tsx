@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { useLingui } from '@lingui/react'
 import {
+  Button,
   Dropdown,
   NavbarListItem,
   PageHeader,
@@ -70,23 +71,14 @@ export const LanguageContent = (): React.ReactElement => {
           onOpenChange={setIsOpen}
           testID={TEST_IDS.dropdown}
           trigger={
-            <button
-              type="button"
-              style={styles.dropdownTrigger}
+            <Button
+              variant="secondary"
+              size="small"
+              iconAfter={<ExpandMore />}
               data-testid={TEST_IDS.dropdownTrigger}
             >
-              <Text
-                variant="bodyEmphasized"
-                color={theme.colors.colorTextPrimary}
-              >
-                {selectedLanguage?.label ?? t('Select')}
-              </Text>
-              <ExpandMore
-                width={14}
-                height={14}
-                style={{ color: theme.colors.colorTextPrimary }}
-              />
-            </button>
+              {selectedLanguage?.label ?? t('Select')}
+            </Button>
           }
         >
           {languageOptions.map((option) => (

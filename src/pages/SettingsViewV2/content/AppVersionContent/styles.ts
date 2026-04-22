@@ -26,18 +26,5 @@ export const createStyles = (colors: ThemeColors) => ({
     borderRadius: `${rawTokens.radius8}px`,
     width: '100%',
     boxSizing: 'border-box' as const
-  },
-
-  checkForUpdatesButton: {
-    display: 'flex' as const,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-    gap: `${rawTokens.spacing4}px`,
-    padding: `${rawTokens.spacing8}px ${rawTokens.spacing12}px`,
-    borderRadius: `${rawTokens.radius8}px`,
-    background: colors.colorPrimary,
-    border: 'none',
-    color: colors.colorOnPrimary,
-    cursor: 'pointer' as const
   }
 })
