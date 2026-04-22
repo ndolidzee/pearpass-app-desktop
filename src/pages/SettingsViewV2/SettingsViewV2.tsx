@@ -31,6 +31,7 @@ import { useRouter } from '../../context/RouterContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { createStyles } from './SettingsViewV2.styles'
 import { MasterPasswordContent } from './content/MasterPasswordContent'
+import { YourVaultsContent } from './content/YourVaultsContent'
 
 export enum SettingsItemKey {
   AppPreferences = 'app-preferences',
@@ -64,6 +65,8 @@ const renderActiveContent = (
   switch (activeItemKey) {
     case SettingsItemKey.MasterPassword:
       return <MasterPasswordContent />
+    case SettingsItemKey.YourVaults:
+      return <YourVaultsContent />
     default:
       return null
   }
