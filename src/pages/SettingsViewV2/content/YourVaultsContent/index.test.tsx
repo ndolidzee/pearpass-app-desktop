@@ -92,27 +92,36 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
         {children}
       </button>
     ),
+    PageHeader: ({
+      title,
+      subtitle,
+      as: _a
+    }: {
+      title: string
+      subtitle?: React.ReactNode
+      as?: string
+    }) => (
+      <div data-testid="settings-your-vaults-page-header">
+        <h1>{title}</h1>
+        {subtitle != null ? <p>{subtitle}</p> : null}
+      </div>
+    ),
     ContextMenu: ({
       children,
-      open,
-      onOpenChange,
       testID,
-      trigger
+      menuWidth: _w,
+      trigger,
+      ..._rest
     }: {
       children: React.ReactNode
-      open: boolean
-      onOpenChange: (o: boolean) => void
       testID: string
+      menuWidth?: number
       trigger: React.ReactNode
+      [key: string]: unknown
     }) => (
       <div data-testid={testID}>
-        <div
-          onClick={() => onOpenChange(true)}
-          onKeyDown={() => {}}
-        >
-          {trigger}
-        </div>
-        {open ? <div data-testid="context-menu-children">{children}</div> : null}
+        {trigger}
+        <div data-testid="context-menu-children">{children}</div>
       </div>
     ),
     ListItem: ({
@@ -122,9 +131,8 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
       rightElement,
       showDivider: _d,
       dividerColor: _c,
-      withRoundedBottomBorders: _r,
       icon: _ic,
-      selectable: _s
+      ..._rest
     }: {
       testID: string
       title: string
@@ -158,7 +166,13 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
         </button>
       )
     },
-    Text: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+    Text: ({
+      children,
+      ..._rest
+    }: {
+      children: React.ReactNode
+      [key: string]: unknown
+    }) => <span>{children}</span>,
     Title: ({
       children,
       as: Component = 'h2'
@@ -230,7 +244,7 @@ describe('YourVaultsContent', () => {
     expect(screen.getByText('Other Vaults')).toBeInTheDocument()
     expect(screen.getByTestId('settings-other-vaults-multislot')).toBeInTheDocument()
     expect(
-      screen.getByTestId('settings-other-vault-Second Vault')
+      screen.getByTestId('settings-other-vault-Second Vault-0')
     ).toBeInTheDocument()
   })
 
@@ -266,10 +280,6 @@ describe('YourVaultsContent', () => {
 
   it('opens rename (edit) for the current vault from the context menu', async () => {
     render(<YourVaultsContent />)
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId('settings-vault-more-button'))
-    })
 
     const rename = screen.getByTestId('settings-vault-edit-button')
     await act(async () => {
