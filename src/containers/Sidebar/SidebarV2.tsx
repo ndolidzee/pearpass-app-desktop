@@ -71,8 +71,10 @@ export const SidebarV2 = () => {
 
   const { categoriesItems } = useRecordMenuItemsV2()
 
-  const activeCategory =
-    !routerData?.folder && routerData?.recordType ? routerData.recordType : null
+  const isAuthenticatorActive = routerData?.recordType === 'authenticator'
+  const activeCategory = isAuthenticatorActive
+    ? null
+    : (routerData?.recordType ?? null)
   const isFavoritesActive = routerData?.folder === FAVORITES_FOLDER_ID
   const selectedFolderName =
     routerData?.folder && !isFavoritesActive ? routerData.folder : null
@@ -94,16 +96,26 @@ export const SidebarV2 = () => {
   const favoritesCount =
     (foldersData?.favorites?.records?.length as number | undefined) ?? 0
 
+  const currentRecordType = routerData?.recordType ?? 'all'
+  const currentFolder = routerData?.folder
+  // Folder selection doesn't apply in authenticator mode; fall back to "all"
+  // so clicking a folder exits authenticator cleanly instead of landing on the
+  // nonsensical { recordType: 'authenticator', folder: X } state.
+  const folderClickRecordType = isAuthenticatorActive ? 'all' : currentRecordType
+
   const handleCategoryClick = (type: string) => {
-    navigate('vault', { recordType: type })
+    navigate('vault', {
+      recordType: type,
+      ...(currentFolder ? { folder: currentFolder } : {})
+    })
   }
 
   const handleFolderClick = (folderId: string) => {
-    navigate('vault', { recordType: 'all', folder: folderId })
+    navigate('vault', { recordType: folderClickRecordType, folder: folderId })
   }
 
   const handleAllFoldersClick = () => {
-    navigate('vault', { recordType: 'all' })
+    navigate('vault', { recordType: folderClickRecordType })
   }
 
   const handleAddFolderClick = () => {
@@ -123,7 +135,7 @@ export const SidebarV2 = () => {
     if (count === 0) {
       void deleteFolder(folderName)
       if (routerData?.folder === folderName) {
-        navigate('vault', { recordType: 'all' })
+        navigate('vault', { recordType: currentRecordType })
       }
       return
     }
@@ -151,8 +163,7 @@ export const SidebarV2 = () => {
     }
   }
 
-  const isAllFoldersActive =
-    !routerData?.folder && routerData?.recordType === 'all'
+  const isAllFoldersActive = !isAuthenticatorActive && !routerData?.folder
 
   const iconTextPrimary = { color: theme.colors.colorTextPrimary }
   const iconTextSecondary = { color: theme.colors.colorTextSecondary }

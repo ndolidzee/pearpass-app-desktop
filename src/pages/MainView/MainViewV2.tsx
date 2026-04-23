@@ -4,9 +4,15 @@ import { useTheme } from '@tetherto/pearpass-lib-ui-kit'
 import { useRecords } from '@tetherto/pearpass-lib-vault'
 
 import { createStyles } from './MainViewV2.styles'
+import {
+  SORT_BY_TYPE,
+  SORT_KEYS,
+  type SortKey
+} from '../../constants/sortOptions'
 import { BrowserExtensionDialogV2 } from '../../containers/Modal/BrowserExtensionDialogV2'
 import { EmptyCollectionViewV2 } from '../../containers/EmptyCollectionViewV2'
 import { EmptyResultsViewV2 } from '../../containers/EmptyResultsViewV2'
+import { MainViewHeader } from '../../containers/MainViewHeader/MainViewHeader'
 import { RecordListViewV2 } from '../../containers/RecordListView/RecordListViewV2'
 import { useAppHeaderContext } from '../../context/AppHeaderContext'
 import { useGlobalLoading } from '../../context/LoadingContext'
@@ -17,14 +23,6 @@ import { getNativeMessagingEnabled } from '../../services/nativeMessagingPrefere
 import { groupRecordsByTimePeriod } from '../../utils/groupRecordsByTimePeriod'
 import { isFavorite } from '../../utils/isFavorite'
 
-const SORT_BY_TYPE = {
-  recent: { key: 'updatedAt', direction: 'desc' as const },
-  newToOld: { key: 'createdAt', direction: 'desc' as const },
-  oldToNew: { key: 'createdAt', direction: 'asc' as const }
-}
-
-type SortType = keyof typeof SORT_BY_TYPE
-
 export const MainViewV2 = () => {
   const { theme } = useTheme()
   const styles = createStyles(theme.colors)
@@ -32,9 +30,15 @@ export const MainViewV2 = () => {
   const { searchValue } = useAppHeaderContext()
   const { data: routerData } = useRouter()
 
-  const [sortType] = useState<SortType>('recent')
+  const [sortKey, setSortKey] = useState<SortKey>(
+    SORT_KEYS.LAST_UPDATED_NEWEST
+  )
   const [isMultiSelectOn, setIsMultiSelectOn] = useState(false)
   const [selectedRecords, setSelectedRecords] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!isMultiSelectOn) setSelectedRecords([])
+  }, [isMultiSelectOn])
 
   useEffect(() => {
     const enabled = getNativeMessagingEnabled()
@@ -50,7 +54,7 @@ export const MainViewV2 = () => {
   const selectedFolder =
     routerData?.folder && !isFavoritesView ? routerData.folder : undefined
 
-  const sort = useMemo(() => SORT_BY_TYPE[sortType], [sortType])
+  const sort = useMemo(() => SORT_BY_TYPE[sortKey], [sortKey])
 
   const { data: records, isLoading } = useRecords({
     shouldSkip: true,
@@ -74,7 +78,6 @@ export const MainViewV2 = () => {
   )
 
   useEffect(() => {
-    setSelectedRecords([])
     setIsMultiSelectOn(false)
   }, [routerData?.folder, routerData?.recordType, searchValue])
 
@@ -83,6 +86,13 @@ export const MainViewV2 = () => {
 
   return (
     <div style={styles.wrapper} data-testid="main-view-v2">
+      <MainViewHeader
+        sortKey={sortKey}
+        setSortKey={setSortKey}
+        isMultiSelectOn={isMultiSelectOn}
+        setIsMultiSelectOn={setIsMultiSelectOn}
+      />
+
       {hasRecords && (
         <RecordListViewV2
           sections={sections}
