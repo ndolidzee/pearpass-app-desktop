@@ -37,6 +37,9 @@ interface Matchers<R = void> {
   toHaveBeenLastCalledWith(...args: unknown[]): R
   toHaveBeenCalled(): R
   toHaveAttribute(attr: string, value?: unknown): R
+  toBeDisabled(): R
+  toBeChecked(): R
+  toHaveValue(expected?: string | number | string[]): R
   not: Matchers<R>
 }
 
