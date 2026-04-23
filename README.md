@@ -77,7 +77,7 @@ npm run dev
 
 ## Usage Examples
 
-Full user documentation, including a getting-started guide, vault management, cross-device sync, and the browser extension, is available at:
+Visit the official PearPass documentation for step-by-step guides on setup, vault management, syncing across devices, and browser extension usage:
 
 **[docs.pass.pears.com](https://docs.pass.pears.com)**
 
