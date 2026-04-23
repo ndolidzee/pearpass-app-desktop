@@ -7,6 +7,12 @@ export const createStyles = (colors: ThemeColors) => ({
     gap: `${rawTokens.spacing24}px`
   },
 
+  header: {
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    gap: `${rawTokens.spacing6}px`
+  },
+
   listWrapper: {
     display: 'flex' as const,
     flexDirection: 'column' as const,

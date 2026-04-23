@@ -9,7 +9,7 @@ import {
 } from '@tetherto/pearpass-lib-ui-kit'
 import {
   MoreVert,
-  PhoneIphone,
+  PublicOutlined,
   SwapVert
 } from '@tetherto/pearpass-lib-ui-kit/icons'
 
@@ -53,10 +53,10 @@ export const YourDevicesContent = () => {
               <ListItem
                 icon={
                   <div style={styles.iconWrap}>
-                    <PhoneIphone
+                    <PublicOutlined
                       width={16}
                       height={16}
-                      color={theme.colors.colorAccentActive}
+                      color={theme.colors.colorTextPrimary}
                     />
                   </div>
                 }
