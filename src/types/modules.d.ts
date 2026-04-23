@@ -267,6 +267,10 @@ declare module '@tetherto/pear-apps-utils-qr' {
   export const generateQRCodeSVG: any
 }
 
+declare module '@tetherto/pear-apps-utils-avatar-initials' {
+  export function generateAvatarInitials(name: string): string
+}
+
 declare module '@tetherto/pear-apps-utils-validator' {
   export const Validator: any
 }

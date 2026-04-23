@@ -225,7 +225,7 @@ export const MoveFolderModalContentV2 = ({
                 <div key={record.id} style={itemRow}>
                   <RecordAvatar
                     websiteDomain={domain ?? ''}
-                    initials={generateAvatarInitials(record.data?.title)}
+                    initials={generateAvatarInitials(record.data?.title ?? '')}
                     size="md"
                     isSelected={false}
                     isFavorite={!!record.isFavorite}
