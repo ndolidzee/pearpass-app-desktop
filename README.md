@@ -48,7 +48,7 @@ Unlike traditional password managers that rely on centralized servers, PearPass 
 
 ### Prerequisites
 
-- **Node.js 22.12.0** — check the required version in `.nvmrc` and verify with:
+- **Node.js** — check the required version in `.nvmrc` and verify with:
 
 ```bash
 node --version
@@ -93,11 +93,6 @@ Run unit tests with Jest:
 npm test
 ```
 
-Run the linter:
-
-```bash
-npm run lint
-```
 
 ---
 
