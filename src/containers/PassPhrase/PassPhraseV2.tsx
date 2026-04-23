@@ -10,7 +10,6 @@ import {
   FieldError,
   InputField,
   Radio,
-  rawTokens,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
 import {
@@ -22,6 +21,7 @@ import { useCopyToClipboard } from '../../hooks/useCopyToClipboard.electron'
 import { usePasteFromClipboard } from '../../hooks/usePasteFromClipboard'
 import { useToast } from '../../context/ToastContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { createStyles } from './PassPhraseV2.styles'
 
 type PassPhraseV2Props = {
   error?: string
@@ -158,55 +158,18 @@ export const PassPhraseV2 = ({
     ? passphraseWords
     : parsePassphraseText(value)
 
-  const section: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: `${rawTokens.spacing12}px`,
-    width: '100%'
-  }
-  const groupContainer: React.CSSProperties = {
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderRadius: `${rawTokens.spacing8}px`,
-    overflow: 'hidden',
-    backgroundColor: theme.colors.colorSurfacePrimary,
-    borderColor: error
-      ? theme.colors.colorSurfaceDestructiveElevated
-      : theme.colors.colorBorderPrimary
-  }
-  const optionSection: React.CSSProperties = {
-    padding: `${rawTokens.spacing12}px`,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: `${rawTokens.spacing12}px`
-  }
-  const headerRow: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: `${rawTokens.spacing12}px`
-  }
-  const headerInfo: React.CSSProperties = { flex: 1 }
-  const grid: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: `${rawTokens.spacing12}px`
-  }
-  const wordInputWrapper: React.CSSProperties = {
-    width: `calc(50% - ${rawTokens.spacing12 / 2}px)`
-  }
+  const styles = createStyles(theme.colors, { hasError: !!error })
 
   return (
-    <div style={section}>
-      <div style={groupContainer}>
+    <div style={styles.section}>
+      <div style={styles.groupContainer}>
         {!isCreateOrEdit ? (
-          <div style={optionSection}>
-            <div style={grid}>
+          <div style={styles.optionSection}>
+            <div style={styles.grid}>
               {detailWords.map((word, inputIndex) => (
                 <div
                   key={`details-word-${inputIndex}`}
-                  style={wordInputWrapper}
+                  style={styles.wordInputWrapper}
                 >
                   <InputField
                     label={getWordLabel(inputIndex)}
@@ -226,19 +189,15 @@ export const PassPhraseV2 = ({
               `Paste or enter ${wordCount} words. Optional +1 works only when pasted`
             )
             const borderStyle: React.CSSProperties =
-              index > 0
-                ? {
-                    borderTop: `1px solid ${theme.colors.colorBorderPrimary}`
-                  }
-                : {}
+              index > 0 ? styles.optionSectionWithBorder : {}
 
             return (
               <div
                 key={wordCount}
-                style={{ ...optionSection, ...borderStyle }}
+                style={{ ...styles.optionSection, ...borderStyle }}
               >
-                <div style={headerRow}>
-                  <div style={headerInfo}>
+                <div style={styles.headerRow}>
+                  <div style={styles.headerInfo}>
                     <Radio
                       builtIn
                       options={[
@@ -294,11 +253,11 @@ export const PassPhraseV2 = ({
                 </div>
 
                 {isSelected ? (
-                  <div style={grid}>
+                  <div style={styles.grid}>
                     {expandedWords.map((word, inputIndex) => (
                       <div
                         key={`${wordCount}-${inputIndex}`}
-                        style={wordInputWrapper}
+                        style={styles.wordInputWrapper}
                       >
                         <InputField
                           label={getWordLabel(inputIndex)}

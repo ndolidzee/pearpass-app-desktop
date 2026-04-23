@@ -5,7 +5,6 @@ import { generateAvatarInitials } from '@tetherto/pear-apps-utils-avatar-initial
 import { rawTokens, useTheme } from '@tetherto/pearpass-lib-ui-kit'
 import { useFavicon } from '@tetherto/pearpass-lib-vault'
 
-// @ts-ignore - JS module without type declarations
 import { RECORD_COLOR_BY_TYPE } from '../../constants/recordColorByType'
 
 const SIZE = 24
