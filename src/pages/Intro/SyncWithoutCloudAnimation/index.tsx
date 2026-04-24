@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Alignment, Fit, Layout, RuntimeLoader } from '@rive-app/webgl2'
-import { useRive } from '@rive-app/react-webgl2'
+import { useRiveWithRetry } from '../../../hooks/useRiveWithRetry'
 
 RuntimeLoader.setWasmUrl('assets/rive/rive_webgl2.wasm')
 
@@ -18,7 +18,10 @@ export const SyncWithoutCloudAnimation = (): React.ReactElement => {
     []
   )
 
-  const { RiveComponent } = useRive(riveParams)
+  const { RiveComponent, key } = useRiveWithRetry({
+    riveParams,
+    riveOptions: undefined
+  })
 
-  return <RiveComponent style={{ width: '100%', height: '100%' }} />
+  return <RiveComponent key={key} style={{ width: '100%', height: '100%' }} />
 }
