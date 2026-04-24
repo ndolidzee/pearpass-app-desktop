@@ -127,6 +127,14 @@ export const SidebarV2 = () => {
       <CreateFolderModalContentV2
         initialValues={{ title: folderName }}
         onClose={closeModal}
+        onRename={(newName, previousName) => {
+          if (routerData?.folder === previousName) {
+            navigate('vault', {
+              recordType: currentRecordType,
+              folder: newName
+            })
+          }
+        }}
       />
     )
   }
