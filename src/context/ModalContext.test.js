@@ -105,7 +105,7 @@ describe('ModalProvider', () => {
     fireEvent.click(screen.getByText('Close Modal'))
 
     act(() => {
-      jest.advanceTimersByTime(BASE_TRANSITION_DURATION)
+      jest.advanceTimersByTime(BASE_TRANSITION_DURATION + 100)
     })
 
     expect(screen.queryByTestId('modal-content')).not.toBeInTheDocument()
@@ -124,7 +124,7 @@ describe('ModalProvider', () => {
     fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' })
 
     act(() => {
-      jest.advanceTimersByTime(BASE_TRANSITION_DURATION)
+      jest.advanceTimersByTime(BASE_TRANSITION_DURATION + 100)
     })
 
     expect(screen.queryByTestId('modal-content')).not.toBeInTheDocument()
@@ -143,7 +143,7 @@ describe('ModalProvider', () => {
     fireEvent.click(screen.getByTestId('overlay'))
 
     act(() => {
-      jest.advanceTimersByTime(BASE_TRANSITION_DURATION)
+      jest.advanceTimersByTime(BASE_TRANSITION_DURATION + 100)
     })
 
     expect(screen.queryByTestId('modal-content')).not.toBeInTheDocument()

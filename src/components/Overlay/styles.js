@@ -14,7 +14,7 @@ export const OverlayComponent = styled.div.withConfig({
   transition: opacity ${BASE_TRANSITION_DURATION}ms ease-in-out;
   background: ${({ type }) => {
     if (type === 'default') {
-      return 'rgba(35, 35, 35, 0.6)'
+      return 'rgba(8, 10, 5, 0.72)'
     }
 
     if (type === 'blur') {

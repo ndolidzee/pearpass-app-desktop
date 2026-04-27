@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import { html } from 'htm/react'
 
 import { OverlayComponent } from './styles'
@@ -12,9 +14,12 @@ import { useAnimatedVisibility } from '../../hooks/useAnimatedVisibility'
  * }} props
  */
 export const Overlay = ({ isOpen, onClick, type = 'default' }) => {
+  const nodeRef = useRef(null)
   const { isShown, isRendered } = useAnimatedVisibility({
     isOpen: isOpen,
-    transitionDuration: BASE_TRANSITION_DURATION
+    transitionDuration: BASE_TRANSITION_DURATION,
+    nodeRef,
+    propertyName: 'opacity'
   })
 
   if (!isRendered) {
@@ -23,6 +28,7 @@ export const Overlay = ({ isOpen, onClick, type = 'default' }) => {
 
   return html`
     <${OverlayComponent}
+      ref=${nodeRef}
       type=${type}
       isShown=${isShown}
       onClick=${() => onClick?.()}
