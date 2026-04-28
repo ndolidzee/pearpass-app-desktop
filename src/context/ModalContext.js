@@ -15,7 +15,7 @@ import { BASE_TRANSITION_DURATION } from '../constants/transitions'
 import { ModalWrapper } from '../containers/Modal'
 import { SideDrawer } from '../containers/Modal/SideDrawer'
 
-const STACK_CLEANUP_BUFFER = 100
+export const STACK_CLEANUP_BUFFER = 100
 
 const ModalContext = createContext()
 

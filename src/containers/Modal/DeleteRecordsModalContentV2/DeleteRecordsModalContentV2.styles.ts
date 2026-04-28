@@ -2,6 +2,7 @@ import type { ThemeColors } from '@tetherto/pearpass-lib-ui-kit'
 import { rawTokens } from '@tetherto/pearpass-lib-ui-kit'
 
 import { FADE_GRADIENT_HEIGHT } from '../../../constants/layout'
+import { withAlpha } from '../../../utils/withAlpha'
 
 export const createStyles = (colors: ThemeColors) => ({
   body: {
@@ -47,7 +48,7 @@ export const createStyles = (colors: ThemeColors) => ({
     bottom: 0,
     height: FADE_GRADIENT_HEIGHT,
     pointerEvents: 'none' as const,
-    background: `linear-gradient(180deg, ${colors.colorSurfacePrimary}00 0%, ${colors.colorSurfacePrimary} 100%)`
+    background: `linear-gradient(180deg, ${withAlpha(colors.colorSurfacePrimary, 0)} 0%, ${colors.colorSurfacePrimary} 100%)`
   },
   confirmText: {
     marginTop: `${rawTokens.spacing16}px`,

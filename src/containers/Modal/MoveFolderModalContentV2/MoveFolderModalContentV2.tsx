@@ -184,41 +184,43 @@ export const MoveFolderModalContentV2 = ({
               }}
             >
               {records.map((record, index) => {
-              const domain =
-                record.type === 'login'
-                  ? record.data?.websites?.[0] ?? null
-                  : null
-              const subtitle = getRecordSubtitle(record)
-              const titleText = record.data?.title ?? ''
-              return (
-                <div key={record.id} style={itemRow}>
-                  <RecordAvatar
-                    websiteDomain={domain ?? ''}
-                    initials={generateAvatarInitials(record.data?.title ?? '')}
-                    size="md"
-                    isSelected={false}
-                    isFavorite={false}
-                    color={
-                      RECORD_COLOR_BY_TYPE[
-                      record.type as keyof typeof RECORD_COLOR_BY_TYPE
-                      ] ?? RECORD_COLOR_BY_TYPE.custom
-                    }
-                    testId={`movefolder-avatar-v2-${index}`}
-                  />
-                  <div style={itemText}>
-                    <Text>{titleText}</Text>
-                    {subtitle ? (
-                      <Text
-                        variant="caption"
-                        color={theme.colors.colorTextSecondary}
-                      >
-                        {subtitle}
-                      </Text>
-                    ) : null}
+                const domain =
+                  record.type === 'login'
+                    ? record.data?.websites?.[0] ?? null
+                    : null
+                const subtitle = getRecordSubtitle(record)
+                const titleText = record.data?.title ?? ''
+                return (
+                  <div key={record.id} style={itemRow}>
+                    <RecordAvatar
+                      websiteDomain={domain ?? ''}
+                      initials={generateAvatarInitials(
+                        record.data?.title ?? ''
+                      )}
+                      size="md"
+                      isSelected={false}
+                      isFavorite={false}
+                      color={
+                        RECORD_COLOR_BY_TYPE[
+                          record.type as keyof typeof RECORD_COLOR_BY_TYPE
+                        ] ?? RECORD_COLOR_BY_TYPE.custom
+                      }
+                      testId={`movefolder-avatar-v2-${index}`}
+                    />
+                    <div style={itemText}>
+                      <Text>{titleText}</Text>
+                      {subtitle ? (
+                        <Text
+                          variant="caption"
+                          color={theme.colors.colorTextSecondary}
+                        >
+                          {subtitle}
+                        </Text>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
             </div>
             {hasItemsOverflow ? (
               <div style={fadeGradient} aria-hidden="true" />
