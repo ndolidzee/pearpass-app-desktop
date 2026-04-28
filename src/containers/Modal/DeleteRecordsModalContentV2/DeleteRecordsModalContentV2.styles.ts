@@ -1,6 +1,9 @@
+import type { ThemeColors } from '@tetherto/pearpass-lib-ui-kit'
 import { rawTokens } from '@tetherto/pearpass-lib-ui-kit'
 
-export const createStyles = () => ({
+import { FADE_GRADIENT_HEIGHT } from '../../../constants/layout'
+
+export const createStyles = (colors: ThemeColors) => ({
   body: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
@@ -24,6 +27,10 @@ export const createStyles = () => ({
     minWidth: 0,
     flex: 1
   },
+  itemsListWrapper: {
+    position: 'relative' as const,
+    width: '100%'
+  },
   itemsList: {
     display: 'flex' as const,
     flexDirection: 'column' as const,
@@ -32,6 +39,15 @@ export const createStyles = () => ({
     maxHeight: '220px',
     overflowY: 'auto' as const,
     paddingLeft: `${rawTokens.spacing12}px`
+  },
+  fadeGradient: {
+    position: 'absolute' as const,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: FADE_GRADIENT_HEIGHT,
+    pointerEvents: 'none' as const,
+    background: `linear-gradient(180deg, ${colors.colorSurfacePrimary}00 0%, ${colors.colorSurfacePrimary} 100%)`
   },
   confirmText: {
     marginTop: `${rawTokens.spacing16}px`,
