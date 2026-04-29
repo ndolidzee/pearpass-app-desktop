@@ -54,7 +54,7 @@ export const createStyles = (colors: ThemeColors) => ({
     maxWidth: '440px',
     marginTop: `${rawTokens.spacing24}px`,
     padding: `${rawTokens.spacing10}px ${rawTokens.spacing8}px`,
-    borderRadius: '10px',
+    borderRadius: `${rawTokens.spacing10}px`,
     border: `1px solid ${colors.colorBorderPrimary}`,
     boxSizing: 'border-box' as const
   },
