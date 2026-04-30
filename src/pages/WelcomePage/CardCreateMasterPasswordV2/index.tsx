@@ -120,7 +120,7 @@ export const CardCreateMasterPasswordV2 = () => {
       await createMasterPassword(createBuffer)
       await logIn({ password: loginBuffer })
       await initVaults({ password: loginBuffer })
-      await createVault({ name: t('Personal vault') })
+      await createVault({ name: t('Personal') })
       await addDevice(getDeviceName())
       navigate('vault', { recordType: 'all' })
       setIsLoading(false)

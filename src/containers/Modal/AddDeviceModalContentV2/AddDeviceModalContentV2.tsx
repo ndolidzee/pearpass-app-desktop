@@ -71,7 +71,7 @@ export const AddDeviceModalContentV2 = () => {
 
   return (
     <Dialog
-      title={t('Share Personal Vault')}
+      title={t('Share Personal')}
       onClose={closeModal}
       testID="add-device-dialog-v2"
       closeButtonTestID="add-device-close-v2"
