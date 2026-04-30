@@ -9,6 +9,20 @@ function isFlatpakRuntime(options = {}) {
   return Boolean(env.FLATPAK_ID) || existsSync(flatpakInfoPath)
 }
 
+function isSnapRuntime(options = {}) {
+  const env = options.env || process.env
+  return Boolean(env.SNAP_NAME)
+}
+
+function getSnapRealHome(options = {}) {
+  const env = options.env || process.env
+  // Inside snap, $HOME is remapped to ~/snap/<name>/<rev>. The user's real
+  // home (where host-side browsers read NativeMessagingHosts) is exposed as
+  // SNAP_REAL_HOME by snapd. Fall back to HOME outside the sandbox.
+  if (!isSnapRuntime(options)) return env.HOME || ''
+  return env.SNAP_REAL_HOME || env.HOME || ''
+}
+
 function getHostHome(options = {}) {
   const env = options.env || process.env
   if (!isFlatpakRuntime(options)) return env.HOME || ''
@@ -64,6 +78,8 @@ module.exports = {
   getFlatpakCompatRoots,
   getHostHome,
   getSandboxSafePath,
+  getSnapRealHome,
   isFlatpakRuntime,
+  isSnapRuntime,
   mapFlatpakPathToSandbox
 }
