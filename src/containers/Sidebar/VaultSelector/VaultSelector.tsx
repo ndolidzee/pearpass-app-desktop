@@ -39,7 +39,11 @@ import { ModifyVaultModalContent } from '../../Modal/ModifyVaultModalContent'
 import { PairedDevicesModalContent } from '../../Modal/PairedDevicesModalContent'
 import { useVaultSwitch } from '../../../hooks/useVaultSwitch'
 
-export const VaultSelector = () => {
+type VaultSelectorProps = {
+  onClose?: () => void
+}
+
+export const VaultSelector = ({ onClose }: VaultSelectorProps = {}) => {
   const { t } = useTranslation()
   const { theme } = useTheme()
   const styles = createStyles(theme.colors)
@@ -78,7 +82,10 @@ export const VaultSelector = () => {
     setModal(
       <CreateOrEditVaultModalContentV2
         onClose={closeModal}
-        onSuccess={closeModal}
+        onSuccess={() => {
+          closeModal()
+          onClose?.()
+        }}
       />
     )
   }
@@ -87,6 +94,7 @@ export const VaultSelector = () => {
     if (activeVault?.id !== vault.id) {
       void switchVault(vault)
     }
+    onClose?.()
   }
 
   const handleInvite = (vault: Vault) => {
