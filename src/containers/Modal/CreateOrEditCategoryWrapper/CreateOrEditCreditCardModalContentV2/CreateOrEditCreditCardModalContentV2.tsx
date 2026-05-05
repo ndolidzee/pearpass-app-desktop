@@ -295,7 +295,7 @@ export const CreateOrEditCreditCardModalContentV2 = ({
             testID="createoredit-creditcard-input-securitycode-v2"
           />
           <PasswordField
-            label={t('Pin')}
+            label={t('PIN')}
             placeholder={t('Enter PIN')}
             value={pinCodeField.value}
             onChange={(e) =>
