@@ -38,6 +38,7 @@ export type CreateOrEditCustomModalContentV2Props = {
   initialRecord?: {
     data: {
       title: string
+      note?: string
       customFields: { type: string; name?: string; note?: string }[]
       attachments: { id: string; name: string }[]
       [key: string]: unknown
@@ -87,6 +88,7 @@ export const CreateOrEditCustomModalContentV2 = ({
 
   const schema = Validator.object({
     title: Validator.string().required(t('Title is required')),
+    note: Validator.string(),
     customFields: Validator.array().items(
       Validator.object({
         note: Validator.string()
@@ -104,6 +106,7 @@ export const CreateOrEditCustomModalContentV2 = ({
   const { register, handleSubmit, registerArray, values, setValue } = useForm({
     initialValues: {
       title: initialRecord?.data?.title ?? '',
+      note: initialRecord?.data?.note ?? '',
       customFields: initialRecord?.data?.customFields?.length
         ? initialRecord.data.customFields
         : [{ type: 'note', name: 'note', note: '' }],
@@ -135,6 +138,7 @@ export const CreateOrEditCustomModalContentV2 = ({
       data: {
         ...(initialRecord?.data ? initialRecord.data : {}),
         title: formValues.title,
+        note: formValues.note,
         customFields: (
           (formValues.customFields as Array<{ type: string; note?: string }>) ??
           []
@@ -168,6 +172,7 @@ export const CreateOrEditCustomModalContentV2 = ({
   const isEdit = !!initialRecord
 
   const titleField = register('title')
+  const noteField = register('note')
 
   return (
     <Dialog
@@ -226,6 +231,17 @@ export const CreateOrEditCustomModalContentV2 = ({
             setValue('folder', name === values.folder ? '' : name)
           }
         />
+
+        <MultiSlotInput testID="createoredit-custom-comments-slot-v2">
+          <InputField
+            label={t('Comment')}
+            placeholder={t('Enter Comment')}
+            value={noteField.value}
+            onChange={(e) => noteField.onChange(e.target.value)}
+            error={noteField.error || undefined}
+            testID="createoredit-custom-input-comment-v2"
+          />
+        </MultiSlotInput>
 
         <MultiSlotInput
           testID="createoredit-custom-attachments-slot-v2"
