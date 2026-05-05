@@ -45,7 +45,6 @@ export const FolderDropdownV2 = ({
         onClose={closeModal}
         onCreate={(folderName: string) => {
           onFolderSelect(folderName)
-          closeModal()
         }}
       />
     )
