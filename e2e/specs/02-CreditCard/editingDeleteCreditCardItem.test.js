@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -71,7 +71,7 @@ test.describe('Editing/Deleting Credit Card Item', () => {
   })
 
   test('Verify that edited "Credit Card" item fields are saved correctly', async () => {
-    // qase.id(2130)
+    qase.id(2130)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('creditcard-name', 'John EDITED')
@@ -107,7 +107,7 @@ test.describe('Editing/Deleting Credit Card Item', () => {
   // });
 
   test('Empty fields are not displayed in view mode', async ({ page }) => {
-    // qase.id(2131)
+    qase.id(2131)
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('creditcard-name', '')
     await createOrEditPage.fillCreateOrEditInput('creditcard-number', '')
@@ -127,7 +127,7 @@ test.describe('Editing/Deleting Credit Card Item', () => {
   })
 
   // test('Verify that deleted custom "Note" fields are not saved in the edited "Credit Card" item', async () => {
-  //   // qase.id(2132)
+  // qase.id(2132)
   //   await mainPage.openElementDetails()
   //   await detailsPage.editElement()
   //   await createOrEditPage.clickCreateCustomItem()
@@ -140,13 +140,13 @@ test.describe('Editing/Deleting Credit Card Item', () => {
   // })
 
   test('Verify that the "Credit Card" item is removed after deletion', async () => {
-    // qase.id(2133)
+    qase.id(2133)
     await utilities.deleteAllElements()
     await mainPage.verifyElementIsNotVisible()
   })
 
   test('Verify that the empty collection view is displayed on the Home screen after deleting the last item', async () => {
-    // qase.id(2134)
+    qase.id(2134)
     await sideMenuPage.selectSideBarCategory('all')
     await expect(mainPage.emptyCollectionView).toBeVisible()
   })

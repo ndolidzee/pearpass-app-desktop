@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -25,7 +25,7 @@ test.describe('Creating Login Item', () => {
   test.beforeAll(async ({ app }) => {
     page = await app.getPage()
     const root = page.locator('body')
-    
+
     loginPage = new LoginPage(root)
     sideMenuPage = new SideMenuPage(root)
     utilities = new Utilities(root)
@@ -61,16 +61,15 @@ test.describe('Creating Login Item', () => {
     try {
       await sideMenuPage.deleteFolder('Test Folder')
     } catch (e) {
-      // folder may not exist if tests didn't create it
     }
     await sideMenuPage.clickSidebarExitButton()
   })
 
   test('Creating the "Login" item', async () => {
-    // qase.id(1928)
+    qase.id(1928)
     await createOrEditPage.fillCreateOrEditInput('title', 'Login Title')
-    await createOrEditPage.fillCreateOrEditInput('username' , 'Test User')
-    await createOrEditPage.fillCreateOrEditInput('password' , 'Test Pass')
+    await createOrEditPage.fillCreateOrEditInput('username', 'Test User')
+    await createOrEditPage.fillCreateOrEditInput('password', 'Test Pass')
     await createOrEditPage.fillCreateOrEditInput('website', 'https://www.website.co')
     await createOrEditPage.fillCreateOrEditInput('comment', 'Test Note')
     await createOrEditPage.clickOnCreateOrEditButton('save')
@@ -78,7 +77,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Viewing created item. Verify item details', async () => {
-    // qase.id(1929)
+    qase.id(1929)
     await mainPage.verifyElementTitle('Login Title')
     await mainPage.openElementDetails()
     await detailsPage.verifyItemDetailsValue('Email or username', 'Test User')
@@ -88,7 +87,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Password visibility icon displays/hides value', async () => {
-    // qase.id(1930)
+    qase.id(1930)
     await mainPage.verifyElementTitle('Login Title')
     await mainPage.openElementDetails()
     await detailsPage.verifyPasswordFieldType('credentials-multi-slot-input-slot-1', 'password')
@@ -97,7 +96,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Dropdown moves to selected item edit screen', async () => {
-    // qase.id(1931)
+    qase.id(1931)
     await mainPage.verifyElementTitle('Login Title')
     await sideMenuPage.clickSidebarAddButton()
     await detailsPage.fillCreateNewFolderTitleInput('Test Folder')
@@ -111,7 +110,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Item moved to folder (and cleanup)', async ({ page }) => {
-    // qase.id(1932)
+    qase.id(1932)
     await sideMenuPage.verifySidebarFolderName('Test Folder')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -123,7 +122,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Add via Favorite icon', async ({ page }) => {
-    // qase.id(1933)
+    qase.id(1933)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.elementCheckBox(false)
@@ -134,14 +133,15 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Remove via Favorite icon', async ({ page }) => {
-    // qase.id(1934)
+    qase.id(1934)
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.clickOnFirstElement()
     await mainPage.clickOnMainViewFavoriteIcon()
-    await sideMenuPage.verifySideBarFavoritesFolder('0 items')})
+    await sideMenuPage.verifySideBarFavoritesFolder('0 items')
+  })
 
   test('Add via More options', async ({ page }) => {
-    // qase.id(1935)
+    qase.id(1935)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickMarkAsFavoriteButton()
@@ -149,7 +149,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('Remove via More options', async ({ page }) => {
-    // qase.id(1936)
+    qase.id(1936)
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickRemoveFromFavoritesButton()
     await sideMenuPage.verifySideBarFavoritesFolder('0 items')
@@ -183,7 +183,7 @@ test.describe('Creating Login Item', () => {
   // })
 
   test('Close via Cross icon', async ({ page }) => {
-    // qase.id(1939)
+    qase.id(1939)
     await mainPage.verifyElementTitle('Login Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -192,7 +192,7 @@ test.describe('Creating Login Item', () => {
   })
 
   test('View uploaded file in Edit mode', async ({ page }) => {
-    // qase.id(1940)
+    qase.id(1940)
     await detailsPage.editElement()
     await createOrEditPage.clickOnAttachment()
     await createOrEditPage.uploadFile()
@@ -203,7 +203,7 @@ test.describe('Creating Login Item', () => {
     await page.waitForTimeout(testData.timeouts.action)
 
     await detailsPage.verifyUploadedFileIsVisible()
-    
+
     await detailsPage.clickOnUploadedFile()
     await detailsPage.verifyUploadedImageIsVisible()
 
@@ -225,7 +225,7 @@ test.describe('Creating Login Item', () => {
   // })
 
   test('Empty fields not displayed in view mode', async ({ page }) => {
-    // qase.id(1942)
+    qase.id(1942)
     await mainPage.verifyElementTitle('Login Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()

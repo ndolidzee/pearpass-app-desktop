@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -56,7 +56,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('Creating the "Identity" item', async ({ page }) => {
-    // qase.id(2151)
+    qase.id(2151)
     await createOrEditPage.fillCreateOrEditInput('identity-title', 'Identity Title')
     await createOrEditPage.fillCreateOrEditInput('identity-fullname', 'Identity Fullname')
     await createOrEditPage.fillCreateOrEditInput('identity-email', 'identitytest@mail.co')
@@ -85,7 +85,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('Viewing created item. Verify item details', async ({ page }) => {
-    // qase.id(2152)
+    qase.id(2152)
     await mainPage.openElementDetails()
     await detailsPage.verifyIdentityDetailsValue('fullname', 'Identity Fullname')
     await detailsPage.verifyIdentityDetailsValue('email', 'identitytest@mail.co')
@@ -135,7 +135,7 @@ test.describe('Creating Identity Item', () => {
   // })
 
   test('Add via Favorite icon', async ({ page }) => {
-    // qase.id(2156)
+    qase.id(2156)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.elementCheckBox(false)
@@ -146,7 +146,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('Remove via Favorite icon', async ({ page }) => {
-    // qase.id(2157)
+    qase.id(2157)
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.clickOnFirstElement()
     await mainPage.clickOnMainViewFavoriteIcon()
@@ -154,7 +154,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('Add via More options', async ({ page }) => {
-    // qase.id(2158)
+    qase.id(2158)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickMarkAsFavoriteButton()
@@ -162,7 +162,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('Remove via More options', async ({ page }) => {
-    // qase.id(2159)
+    qase.id(2159)
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickRemoveFromFavoritesButton()
     await sideMenuPage.verifySideBarFavoritesFolder('0 items')
@@ -196,7 +196,7 @@ test.describe('Creating Identity Item', () => {
   // })
 
   test('Close via Cross icon', async ({ page }) => {
-    // qase.id(2162)
+    qase.id(2162)
     await mainPage.verifyElementTitle('Identity Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -205,7 +205,7 @@ test.describe('Creating Identity Item', () => {
   })
 
   test('View uploaded file in Edit mode', async ({ page }) => {
-    // qase.id(2163)
+    qase.id(2163)
     await detailsPage.editElement()
     await createOrEditPage.clickOnAttachment()
     await createOrEditPage.uploadFile()
@@ -221,22 +221,10 @@ test.describe('Creating Identity Item', () => {
     await detailsPage.verifyUploadedImageIsVisible()
 
     await createOrEditPage.clickElementItemCloseButton()
-    // await mainPage.verifyElementTitle('Identity Title')
-    // await mainPage.openElementDetails()
-    // await detailsPage.editElement()
-    // await createOrEditPage.clickOnCreateOrEditButton('loadfile')
-    // await createOrEditPage.uploadFile()
-    // await createOrEditPage.verifyUploadedFileIsVisible()
-    // await createOrEditPage.clickOnUploadedFile()
-    // await createOrEditPage.verifyUploadedImageIsVisible()
-    // await createOrEditPage.clickElementItemCloseButton()
-    // await createOrEditPage.clickOnCreateOrEditButton('save')
-    // await page.waitForTimeout(testData.timeouts.action)
-    // await mainPage.clickDetailsCloseButton()
   })
 
   // test('View uploaded file in View mode (and cleanup)', async ({ page }) => {
-  //   // qase.id(2164)
+  // qase.id(2164)
   //   await mainPage.openElementDetails()
   //   await detailsPage.verifyUploadedFileIsVisible()
   //   await detailsPage.clickOnUploadedFile()
@@ -250,11 +238,11 @@ test.describe('Creating Identity Item', () => {
   // })
 
   test('Empty fields not displayed in view mode', async ({ page }) => {
-    // qase.id(2165)
+    qase.id(2165)
     await mainPage.verifyElementTitle('Identity Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
-    // await createOrEditPage.fillCreateOrEditInput('identity-title', '')
+
     await createOrEditPage.fillCreateOrEditInput('identity-fullname', '')
     await createOrEditPage.fillCreateOrEditInput('identity-email', '')
     await createOrEditPage.fillCreateOrEditInput('identity-phone', '')
@@ -280,46 +268,6 @@ test.describe('Creating Identity Item', () => {
 
     await mainPage.openElementDetails()
     await detailsPage.verifyDetailsNoItems()
-
-    // await detailsPage.verifyTitle('Identity Title')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('fullname', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('email', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('address', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('zip', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('city', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('region', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('country', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('passportfullname', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('passportnumber', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'passportissuingcountry',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'passportdateofissue',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'passportexpirydate',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'passportnationality',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('passportdob', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('passportgender', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('idcardnumber', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'idcarddateofissue',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('idcardexpirydate', '')
-    // await detailsPage.verifyItemDetailsValueIsNotVisible(
-    //   'idcardissuingcountry',
-    //   ''
-    // )
-    // await detailsPage.verifyItemDetailsValueIsNotVisible('note', '')
 
     await mainPage.clickDetailsCloseButton()
   })

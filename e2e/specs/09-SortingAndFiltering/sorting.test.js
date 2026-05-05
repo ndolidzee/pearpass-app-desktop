@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -34,7 +34,6 @@ test.describe('Sorting test', () => {
 
     await sideMenuPage.selectSideBarCategory('all')
     await utilities.deleteAllElements()
-    // await page.waitForTimeout(testData.timeouts.action)
   })
 
   test.beforeEach(async ({ app }) => {
@@ -54,18 +53,12 @@ test.describe('Sorting test', () => {
   })
 
   test('Verify that items are sorted by most recently modified when "Recent" is selected', async () => {
-    // qase.id(2592)
+    qase.id(2592)
     await sideMenuPage.selectSideBarCategory('login')
     await mainPage.clickAddItem('login')
     await createOrEditPage.fillCreateOrEditInput('title', 'AAA')
     await createOrEditPage.clickOnCreateOrEditButton('save')
     await page.waitForTimeout(testData.timeouts.action)
-
-    // await sideMenuPage.selectSideBarCategory('creditCard')
-    // await mainPage.clickAddItem('creditCard')
-    // await createOrEditPage.fillCreateOrEditInput('creditCard-title', 'BBB') //createoredit-creditcard-input-title-v2
-    // await createOrEditPage.clickOnCreateOrEditButton('creditCard-save')
-    // await page.waitForTimeout(testData.timeouts.action)
 
     await sideMenuPage.selectSideBarCategory('identity')
     await mainPage.clickAddItem('identity')
@@ -91,7 +84,7 @@ test.describe('Sorting test', () => {
   test('Verify that items are sorted from newest to oldest when "Newest to oldest" is selected', async ({
     page
   }) => {
-    // qase.id(2593)
+    qase.id(2593)
     await mainPage.clickSortButton()
     await mainPage.selectSortOption('last_updated_newest')
 
@@ -103,7 +96,7 @@ test.describe('Sorting test', () => {
   test('Verify that items are sorted from oldest to newest when "Oldest to newest" is selected', async ({
     page
   }) => {
-    // qase.id(2594)
+    qase.id(2594)
     await mainPage.clickSortButton()
     await mainPage.selectSortOption('last_updated_oldest')
 
@@ -116,7 +109,7 @@ test.describe('Sorting test', () => {
   test('Verify that favorite items are displayed first on the Home screen', async ({
     page
   }) => {
-    // qase.id(2595)
+    qase.id(2595)
     await sideMenuPage.selectSideBarCategory('login')
     await mainPage.openElementDetails()
     await detailsPage.clickFavoriteButton()
@@ -136,7 +129,7 @@ test.describe('Sorting test', () => {
   test('Verify that only favorite items are displayed when "Favorite" is selected', async ({
     page
   }) => {
-    // qase.id(2596)
+    qase.id(2596)
     await sideMenuPage.openSideBarFolder('Favorites')
     await page.waitForTimeout(testData.timeouts.action)
     await mainPage.verifyElementByPosition('0', 'AAA')

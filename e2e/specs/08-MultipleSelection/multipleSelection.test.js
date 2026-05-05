@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -56,7 +56,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that selected items in one tab are deleted on "Delete" click', async ({
     page
   }) => {
-    // qase.id(2580)
+    qase.id(2580)
     await sideMenuPage.selectSideBarCategory('login')
     await mainPage.clickAddItem('login')
     await createOrEditPage.fillCreateOrEditInput('title', 'AAA')
@@ -75,7 +75,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that selected items across tabs are deleted on "Delete" click', async ({
     page
   }) => {
-    // qase.id(2581)
+    qase.id(2581)
     await sideMenuPage.selectSideBarCategory('login')
     await mainPage.clickAddItem('login')
     await createOrEditPage.fillCreateOrEditInput('title', 'AAA')
@@ -106,7 +106,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that "Multiple Selection" button is hidden when no items exist', async ({
     page
   }) => {
-    // qase.id(2582)
+    qase.id(2582)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.verifyEmptyCollection()
     // await mainPage.verifyMultipleSelectiontButtonIsNotVisible()
@@ -115,7 +115,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that "Multiple Selection" mode can be canceled', async ({
     page
   }) => {
-    // qase.id(2583)
+    qase.id(2583)
     await sideMenuPage.selectSideBarCategory('all')
     await utilities.deleteAllElements()
     await page.waitForTimeout(testData.timeouts.action)
@@ -135,7 +135,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that "Delete" button is enabled only when items are selected', async ({
     page
   }) => {
-    // qase.id(2584)
+    qase.id(2584)
     await sideMenuPage.selectSideBarCategory('login')
     await mainPage.clickMultipleSelectiontButton()
     await page.waitForTimeout(testData.timeouts.action)
@@ -149,7 +149,7 @@ test.describe('Multiple Selection', () => {
   test('Verify that multiple items can be added to a folder simultaneously', async ({
     page
   }) => {
-    // qase.id(2585)
+    qase.id(2585)
     await sideMenuPage.selectSideBarCategory('all')
     await utilities.deleteAllElements()
     await page.waitForTimeout(testData.timeouts.action)
@@ -187,9 +187,7 @@ test.describe('Multiple Selection', () => {
     await mainPage.verifyElementFolderName('Test Folder')
     await sideMenuPage.deleteMultipleItemsFolder('Test Folder')
     await page.waitForTimeout(testData.timeouts.action)
-    // await sideMenuPage.selectSideBarCategory('all')
-    // await page.waitForTimeout(testData.timeouts.action)
+
     await sideMenuPage.clickDeleteFolderButton()
-    // Click on "Delete Folder and Items" and verify that folder along with items inside it are deleted
   })
 })

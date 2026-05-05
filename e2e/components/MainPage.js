@@ -5,34 +5,58 @@ class MainPage {
     this.root = root
   }
 
-  // ==== LOCATORS ====
-
-  // verifySideBarFavoritesFolder
-  get mainViewHeaderSelect() {
-    return this.root.getByTestId('main-view-header-select')
-  }
-
-  async clickMainViewHeaderSelect() {
-    await expect(this.mainViewHeaderSelect).toBeVisible()
-    await this.mainViewHeaderSelect.click()
-  }
-
-  get listItemThreeDotsMenuMarkAsFavorite() {
-    return this.root.getByTestId('recordaction-item-favorite').first()
-  }
-
-  async selectListItemThreeDotsMenuMarkAsFavorite() {
-    await expect(this.listItemThreeDotsMenuMarkAsFavorite).toBeVisible()
-    await this.listItemThreeDotsMenuMarkAsFavorite.click()
-  }
-
-  get emptyCollectionView() {
-    return this.root.getByTestId('empty-collection-v2')
-  }
+  // --- Element list / records ---
 
   get element() {
     return this.root.locator('[data-record-id]').first()
   }
+
+  getElementByPosition(position) {
+    return this.root
+      .locator('[data-record-id]')
+      .nth(position)
+      .locator('span')
+      .last()
+  }
+
+  async clickOnFirstElement() {
+    await expect(this.element).toBeVisible()
+    await this.element.click()
+  }
+
+  async openElementDetails() {
+    await expect(this.element).toBeVisible()
+    await this.element.click()
+  }
+
+  async verifyElementTitle(title) {
+    const row = this.root.locator('[data-record-id]').filter({ hasText: title })
+    await expect(row).toBeVisible()
+  }
+
+  async verifyElementIsNotVisible() {
+    await expect(this.element).not.toBeVisible()
+  }
+
+  async verifyElementByPosition(position, element_name) {
+    await expect(this.getElementByPosition(position)).toHaveText(element_name)
+  }
+
+  async clickElementByPosition(position, element_name) {
+    const element = this.getElementByPosition(position)
+    await expect(element).toContainText(element_name)
+    await element.click()
+  }
+
+  async elementCheckBox(expectedState) {
+    const checkbox = this.element
+      .locator('button[aria-checked]')
+
+    await expect(checkbox)
+      .toHaveAttribute('aria-checked', String(expectedState))
+  }
+
+  // --- Favorites ---
 
   get mainViewFavoriteIcon() {
     return this.root.getByTestId('multi-select-favorite')
@@ -41,12 +65,6 @@ class MainPage {
   async clickOnMainViewFavoriteIcon() {
     await expect(this.mainViewFavoriteIcon).toBeVisible()
     await this.mainViewFavoriteIcon.click()
-  }
-
-  async favoriteIconState(expectedState) {
-    const favorite = this.mainViewFavoriteIcon
-    await expect(favorite)
-    .toHaveAttribute('aria-checked', String(expectedState))
   }
 
   async favoriteIconDisabled() {
@@ -59,77 +77,10 @@ class MainPage {
     await expect(favorite2).toHaveAttribute('aria-label', 'Remove from Favorites')
   }
 
-  // async favoriteIconDisabled(expectedState) {
-  //   await expect(this.mainViewFavoriteIcon).toBeDisabled();
-  // }
+  // --- Multi-select ---
 
-  // async favoriteIconEnabled(expectedState) {
-  //   await expect(this.mainViewFavoriteIcon).toBeEnabled();
-  // }
-
-  async elementCheckBox(expectedState) {
-    const checkbox = this.element
-      .locator('button[aria-checked]')
-
-    await expect(checkbox)
-      .toHaveAttribute('aria-checked', String(expectedState))
-  }
-
-  async clickOnFirstElement() {
-    await expect(this.element).toBeVisible()
-    await this.element.click()
-  }
-
-  get firstElement() {
-    return this.root.getByTestId('recordList-record-container').first()
-  }
-
-  get lastElement() {
-    return this.root.getByTestId('recordList-record-container').first()
-  }
-
-  get elementFolder() {
-    return this.root.locator('[data-record-id]').first()
-  }
-
-  getElementFavoriteIcon(initials) {
-    return this.root.getByTestId(`avatar-favorite-${initials}`).last()
-  }
-
-  getElementFavoriteIcon(initials) {
-    return this.root.getByTestId(`avatar-favorite-${initials}`).last()
-  }
-
-  get mainPlusButon() {
-    return this.root.getByTestId('main-plus-button')
-  }
-
-  get sortButon() {
-    return this.root.getByTestId('main-view-header-sort-menu')
-  }
-
-  getSortOption(option) {
-    return this.root.getByTestId(`main-view-header-sort-${option}`) // main-view-header-sort
-  }
-
-  // main-view-header-sort-title_az
-  // main-view-header-sort-last_updated_newest
-  // main-view-header-sort-last_updated_oldest
-  // main-view-header-sort-date_added_newest
-  // main-view-header-sort-date_added_oldest
-
-  getElementByPosition(position) {
-    return this.root
-      .locator('[data-record-id]')
-      .nth(position)
-      .locator('span')
-      .last()
-  }
-
-  getElementByPosition1(position) {
-    return this.root
-      .locator('[data-record-id]')
-      .nth(`${position}`)
+  get mainViewHeaderSelect() {
+    return this.root.getByTestId('main-view-header-select')
   }
 
   get multipleSelectionButon() {
@@ -148,78 +99,6 @@ class MainPage {
     return this.root.getByTestId('multi-select-cancel-button')
   }
 
-  get createNewFolderButton() {
-    return this.root.getByTestId('button-single-input')
-  }
-
-  get createFolderModalButton() {
-    return this.root.getByRole('button', { name: 'Create folder' })
-  }
-
-  get confirmModalButton() {
-    return this.root.getByRole('button', { name: 'Confirm' })
-  }
-
-  get createNewFolderinputFolderName() {
-    return this.root.getByTestId('input-field')
-  }
-
-  get detailsCloseButton() {
-    // Record Details panel close/collapse button (after save we're on details view, not edit modal)
-    return this.root.getByTestId('details-button-collapse')
-  }
-
-  async clickDetailsCloseButton() {
-    // After save, modal closes. Click details collapse or modal X if visible (short wait).
-    const collapseBtn = this.root.getByTestId('details-button-collapse')
-    const modalCloseBtn = this.root
-      .getByTestId('modalheader-button-close')
-      .last()
-    const closeBtn = collapseBtn.or(modalCloseBtn)
-    await closeBtn.click({ timeout: 5000 }).catch(() => { })
-    // If neither visible (e.g. save already closed everything), no-op
-  }
-
-  async clickConfirmModalButton() {
-    await expect(this.confirmModalButton).toBeVisible()
-    await this.confirmModalButton.click()
-  }
-
-  async clickCreateFoldertButton() {
-    await expect(this.createFolderModalButton).toBeVisible()
-    await this.createFolderModalButton.click()
-  }
-
-  async fillCreateNewFolderInput() {
-    await expect(this.createNewFolderinputFolderName).toBeVisible()
-    await this.createNewFolderinputFolderName.fill('Test Folder')
-  }
-
-  async clickCreateNewFoldertButton() {
-    await expect(this.createNewFolderButton).toBeVisible()
-    await this.createNewFolderButton.click()
-  }
-
-  async clickMultipleSelectCancelButon() {
-    await expect(this.multipleSelectCancelButon).toBeVisible()
-    await this.multipleSelectCancelButon.click()
-  }
-
-  async clickMultipleSelectMoveButon() {
-    await expect(this.multipleSelectMoveButon).toBeVisible()
-    await this.multipleSelectMoveButon.click()
-  }
-
-  async verifyMultipleSelectDeleteButtonIsDisabled() {
-    await expect(this.multipleSelectDeleteButon).toBeVisible()
-    await expect(this.multipleSelectDeleteButon).toBeDisabled()
-  }
-
-  async verifyMultipleSelectDeleteButtonIsEnabled() {
-    await expect(this.multipleSelectDeleteButon).toBeVisible()
-    await expect(this.multipleSelectDeleteButon).toBeEnabled()
-  }
-
   get multipleSelectCheckerByPosition() {
     return this.root
       .getByTestId('recordList-record-container')
@@ -227,73 +106,9 @@ class MainPage {
       .getByTestId('undefined-selected')
   }
 
-  getElementThreeDotsByPosition(position) {
-    return this.root.getByTestId('list-item-threedots').nth(`${position}`)
-  }
-
-  async clickOnElementThreeDotsByPosition(position) {
-    const threedots = this.getElementThreeDotsByPosition(position)
-    await expect(threedots).toBeVisible()
-    await threedots.click()
-  }
-
-  async verifyMultipleSelectiontButtonIsNotVisible() {
-    await expect(this.multipleSelectionButon).not.toBeVisible()
-  }
-
-  async verifyElementisChecked(position) {
-    const checker = this.multipleSelectCheckerByPosition(position)
-    await expect(checker).toBeVisible()
-  }
-
-  getCollectionButton(button_name) {
-    return this.root.getByTestId(`emptycollection-button-create-${button_name}`)
-  }
-
-  // Select a folder chip in the move folder modal
-  async clickMoveFolderChip(folderName) {
-    const chip = this.root.getByTestId(`movefolder-chip-${folderName}`)
-    await expect(chip).toBeVisible()
-    await chip.click()
-  }
-
-  // Confirm move in the move folder modal
-  async clickMoveFolderSubmit() {
-    const submitBtn = this.root.getByTestId('movefolder-submit-v2')
-    await expect(submitBtn).toBeVisible()
-    await expect(submitBtn).toBeEnabled()
-    await submitBtn.click()
-  }
-
-  // Select an item via right-click context menu → "Select Item"
-  // This activates multi-select mode AND selects the item
-  async selectItemByTitle(title) {
-    const row = this.root.locator('[data-record-id]').filter({ hasText: title })
-    await expect(row).toBeVisible()
-    await row.click({ button: 'right' })
-    const selectMenuItem = this.root.locator('[data-testid^="record-row-menu-select-"]')
-    await expect(selectMenuItem).toBeVisible()
-    await selectMenuItem.click()
-  }
-
-  // Click an item row by title (useful for checkbox click in multi-select mode)
-  async clickItemByTitle(title) {
-    const row = this.root.locator('[data-record-id]').filter({ hasText: title })
-    await expect(row).toBeVisible()
-    await row.click()
-  }
-
-  // ==== ACTIONS ====
-
-  async clickCollectionButton(button_id) {
-    const collection_button = this.getCollectionButton(button_id)
-    await expect(collection_button).toBeVisible()
-    await collection_button.click()
-  }
-
-  async clickMultipleSelectDeletetButton() {
-    await expect(this.multipleSelectDeleteButon).toBeVisible()
-    await this.multipleSelectDeleteButon.click()
+  async clickMainViewHeaderSelect() {
+    await expect(this.mainViewHeaderSelect).toBeVisible()
+    await this.mainViewHeaderSelect.click()
   }
 
   async clickMultipleSelectiontButton() {
@@ -301,37 +116,44 @@ class MainPage {
     await this.multipleSelectionButon.click()
   }
 
-  async verifyMultipleSelectiontButtonIsNotVisible() {
-    await expect(this.multipleSelectionButon).not.toBeVisible()
+  async clickMultipleSelectDeletetButton() {
+    await expect(this.multipleSelectDeleteButon).toBeVisible()
+    await this.multipleSelectDeleteButon.click()
   }
 
-  async verifyMultipleSelectDeletetButtonIsVisible() {
-    await expect(this.multipleSelectionButon).not.toBeVisible()
+  async clickMultipleSelectMoveButon() {
+    await expect(this.multipleSelectMoveButon).toBeVisible()
+    await this.multipleSelectMoveButon.click()
   }
 
-  async clickCreateNewElementButton(name) {
-    const button = this.root.getByText(name)
-    await expect(button).toBeVisible()
-    await button.click()
+  async verifyMultipleSelectDeleteButtonIsEnabled() {
+    await expect(this.multipleSelectDeleteButon).toBeVisible()
+    await expect(this.multipleSelectDeleteButon).toBeEnabled()
+  }
+
+  // --- Add item / plus button ---
+
+  get mainPlusButon() {
+    return this.root.getByTestId('main-plus-button')
   }
 
   async clickAddItem(type) {
     await expect(this.mainPlusButon).toBeVisible()
     await this.mainPlusButon.click()
-    
+
     const menuItem = this.root.getByTestId(`add-item-${type}`)
     await expect(menuItem).toBeVisible()
     await menuItem.click()
   }
 
-  async openElementDetails() {
-    await expect(this.element).toBeVisible()
-    await this.element.click()
+  // --- Sort ---
+
+  get sortButon() {
+    return this.root.getByTestId('main-view-header-sort-menu')
   }
 
-  async clickMainPlusButton() {
-    await expect(this.mainPlusButon).toBeVisible()
-    await this.mainPlusButon.click()
+  getSortOption(option) {
+    return this.root.getByTestId(`main-view-header-sort-${option}`)
   }
 
   async clickSortButton() {
@@ -344,60 +166,73 @@ class MainPage {
     await sortOption.click()
   }
 
-  // ==== VERIFICATIONS ====
+  // --- Folder management ---
 
-  async verifyElementTitle(title) {
-    const row = this.root.locator('[data-record-id]').filter({ hasText: title })
-    await expect(row).toBeVisible()
+  get createNewFolderinputFolderName() {
+    return this.root.getByTestId('input-field')
   }
 
-  async verifyElementFavoriteIcon(initials) {
-    await expect(this.getElementFavoriteIcon(initials)).toBeVisible()
+  get createFolderModalButton() {
+    return this.root.getByRole('button', { name: 'Create folder' })
+  }
+
+  getCollectionButton(button_name) {
+    return this.root.getByTestId(`emptycollection-button-create-${button_name}`)
   }
 
   async verifyElementFolderName(elementfoldername) {
-    // v2: navigate to the folder in the sidebar and verify item appears
     const folderBtn = this.root.getByTestId(`sidebar-folder-${elementfoldername}`)
     await expect(folderBtn).toBeVisible()
     await folderBtn.click()
     await expect(this.root.locator('[data-record-id]').first()).toBeVisible()
   }
 
-  async verifyElementIsNotVisible() {
-    await expect(this.element).not.toBeVisible()
+  // --- Move folder ---
+
+  async clickMoveFolderChip(folderName) {
+    const chip = this.root.getByTestId(`movefolder-chip-${folderName}`)
+    await expect(chip).toBeVisible()
+    await chip.click()
+  }
+
+  async clickMoveFolderSubmit() {
+    const submitBtn = this.root.getByTestId('movefolder-submit-v2')
+    await expect(submitBtn).toBeVisible()
+    await expect(submitBtn).toBeEnabled()
+    await submitBtn.click()
+  }
+
+  // --- Empty collection ---
+
+  get emptyCollectionView() {
+    return this.root.getByTestId('empty-collection-v2')
   }
 
   async verifyEmptyCollection() {
     await expect(this.emptyCollectionView).toBeVisible()
   }
 
-  async verifyElementByPosition(position, element_name) {
-    await expect(this.getElementByPosition(position)).toHaveText(element_name)
+  // --- Details close ---
+
+  get detailsCloseButton() {
+    return this.root.getByTestId('details-button-collapse')
   }
 
-  async clickElementByPosition(position, element_name) {
-    const element = this.getElementByPosition1(position)
-    await expect(element).toContainText(element_name)
-    await element.click()
+  async clickDetailsCloseButton() {
+    const collapseBtn = this.root.getByTestId('details-button-collapse')
+    const modalCloseBtn = this.root
+      .getByTestId('modalheader-button-close')
+      .last()
+    const closeBtn = collapseBtn.or(modalCloseBtn)
+    await closeBtn.click({ timeout: 5000 }).catch(() => { })
   }
 
-  async clickYesButton() {
-    await this.root.getByTestId('delete-records-submit-v2').click()
-  }
-
-  async verifyElementByPosition(position, element_name) {
-    await expect(this.getElementByPosition(position)).toHaveText(element_name)
-  }
-
-  async clickElementByPosition(position, element_name) {
-    const element = this.getElementByPosition1(position)
-    await expect(element).toContainText(element_name)
-    await element.click()
-  }
+  // --- Confirm / delete ---
 
   async clickYesButton() {
     await this.root.getByTestId('delete-records-submit-v2').click()
   }
+
 }
 
 module.exports = { MainPage }

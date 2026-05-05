@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -53,32 +53,12 @@ test.describe('Settings test', () => {
   })
 
   test('Verify Security Settings', async ({ page }) => {
-    // qase.id(2605)
+    qase.id(2605)
     await sideMenuPage.clickSidebarSettingsButton()
 
     await settingsPage.verifySettingsDropdownSectionIsVisible('security')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('app-preferences')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('master-password')
-
-    
-
-    // await settingsPage.clickBackSettingsButton()
-
-    // await settingsPage.verifySettingsFunction('reminders-switch')
-    // await settingsPage.verifySettingsFunction('copy-to-clipboard-switch')
-    // await settingsPage.verifySettingsFunction('auto-logout-dropdown')
-
-    // // Remimder Switch
-    // await settingsPage.clickPearPassFunctionButton('reminders-switch', 'on')
-    // await settingsPage.verifySwitchIsOnOrOff('reminders-switch', 'off', 'off')
-    // await settingsPage.clickPearPassFunctionButton('reminders-switch', 'off')
-    // await settingsPage.verifySwitchIsOnOrOff('reminders-switch', 'on', 'on')
-
-    // Copy-to-clipboard Switch
-    // await settingsPage.clickPearPassFunctionButton('copy-to-clipboard-switch', 'on')
-    // await settingsPage.verifySwitchIsOnOrOff('copy-to-clipboard-switch', 'off', 'off')
-    // await settingsPage.clickPearPassFunctionButton('copy-to-clipboard-switch', 'off')
-    // await settingsPage.verifySwitchIsOnOrOff('copy-to-clipboard-switch', 'on', 'on')
 
     // Auto-Logout Dropdown
     await settingsPage.clickPearPassFunctionDropdown('auto-lock-select')
@@ -91,20 +71,20 @@ test.describe('Settings test', () => {
     await settingsPage.getPearPassFunctionDropdownOption('hours_1')
     await settingsPage.getPearPassFunctionDropdownOption('hours_4')
     await settingsPage.getPearPassFunctionDropdownOption('never')
-    // Force-click the dropdown trigger to toggle it closed (bypasses the backdrop overlay)
+
     await settingsPage.getPearPassFunctionDropdown('auto-lock-select').click({ force: true })
     await page.waitForTimeout(testData.timeouts.action)
   })
 
   test('Verify Syncing Settings', async ({ page }) => {
-    // qase.id(2606)
+    qase.id(2606)
     await settingsPage.verifySettingsDropdownSectionIsVisible('syncing')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('blind-peering')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('your-devices')
   })
 
   test('Verify Vault Settings', async ({ page }) => {
-    // qase.id(2607)
+    qase.id(2607)
     await settingsPage.verifySettingsDropdownSectionIsVisible('vault')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('your-vaults')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('import-items')
@@ -112,13 +92,13 @@ test.describe('Settings test', () => {
   })
 
   test('Verify Appearance Settings', async ({ page }) => {
-    // qase.id(2608)
+    qase.id(2608)
     await settingsPage.verifySettingsDropdownSectionIsVisible('appearance')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('language')
   })
 
   test('Verify About Settings', async ({ page }) => {
-    // qase.id(2609)
+    qase.id(2609)
     await settingsPage.verifySettingsDropdownSectionIsVisible('about')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('report-a-problem')
     await settingsPage.verifySettingsDropdownNavigationIsVisible('app-version')

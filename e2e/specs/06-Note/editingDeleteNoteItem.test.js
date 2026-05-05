@@ -62,7 +62,7 @@ test.describe('Editing/Deleting Note Item', () => {
   })
 
   test('Verify that edited "Note" item fields are saved correctly', async () => {
-    // qase.id(2262)
+    qase.id(2262)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('note-title', 'EDITED Note Title')
@@ -75,7 +75,7 @@ test.describe('Editing/Deleting Note Item', () => {
   })
 
   // test('Verify that custom "Note" fields are not saved in the edited "Note" item', async () => {
-  //   // qase.id(2263);
+  // qase.id(2263);
   //   await detailsPage.editElement();
   //   await createOrEditPage.clickCreateCustomItem();
   //   await createOrEditPage.clickCustomItemOptionNote();
@@ -85,7 +85,7 @@ test.describe('Editing/Deleting Note Item', () => {
   // });
 
   // test('Empty fields are not displayed in view mode', async () => {
-  //   // qase.id(2264);
+  // qase.id(2264);
   //   await createOrEditPage.fillCreateOrEditTextArea('note', '');
   //   await mainPage.openElementDetails();
   //   await detailsPage.verifyItemDetailsValue('https://', '');
@@ -96,13 +96,13 @@ test.describe('Editing/Deleting Note Item', () => {
   // });
 
   test('Verify that the "Login" item is removed after deletion', async () => {
-    // qase.id(2265)
+    qase.id(2265)
     await utilities.deleteAllElements()
     await mainPage.verifyElementIsNotVisible()
   })
 
   test('Verify that the empty collection view is displayed on the Home screen after deleting the last item', async () => {
-    // qase.id(2266)
+    qase.id(2266)
     await sideMenuPage.selectSideBarCategory('all')
     await expect(mainPage.emptyCollectionView).toBeVisible()
   })

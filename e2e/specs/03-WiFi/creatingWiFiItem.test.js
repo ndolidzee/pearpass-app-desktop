@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -50,13 +50,13 @@ test.describe('Creating WiFi Item', () => {
     detailsPage = new DetailsPage(root)
   })
 
-  test.afterAll(async ({}) => {
+  test.afterAll(async ({ }) => {
     await utilities.deleteAllElements()
     await sideMenuPage.clickSidebarExitButton()
   })
 
   test('Creating the "WiFi" item', async ({ page }) => {
-    // qase.id(2135)
+    qase.id(2135)
     await createOrEditPage.fillCreateOrEditInput('wifi-name', 'WiFi Title')
     await createOrEditPage.fillCreateOrEditInput('wifi-password', 'WiFi Pass')
     await createOrEditPage.fillCreateOrEditInput('wifi-comment', 'WiFi Note')
@@ -64,7 +64,7 @@ test.describe('Creating WiFi Item', () => {
   })
 
   test('Viewing created item. Verify item details', async ({ page }) => {
-    // qase.id(2136)
+    qase.id(2136)
     await mainPage.openElementDetails()
     await detailsPage.verifyTitle('WiFi Title')
     await detailsPage.verifyItemDetailsValue('Wi-Fi Password', 'WiFi Pass')
@@ -72,7 +72,7 @@ test.describe('Creating WiFi Item', () => {
   })
 
   test('Password visibility icon displays/hides value', async ({ page }) => {
-    // qase.id(2137)
+    qase.id(2137)
     await mainPage.openElementDetails()
     await mainPage.verifyElementTitle('WiFi Title')
     await createOrEditPage.verifyPasswordType('password')
@@ -81,7 +81,7 @@ test.describe('Creating WiFi Item', () => {
   })
 
   // test('Dropdown moves to selected item edit screen', async ({ page }) => {
-  //   // qase.id(2138)
+  // qase.id(2138)
   //   await mainPage.verifyElementTitle('WiFi Title')
   //   await sideMenuPage.clickSidebarAddButton()
   //   await detailsPage.fillCreateNewFolderTitleInput('Test Folder')
@@ -106,7 +106,7 @@ test.describe('Creating WiFi Item', () => {
   // })
 
   test('Add via Favorite icon', async ({ page }) => {
-    // qase.id(2140)
+    qase.id(2140)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.elementCheckBox(false)
@@ -114,50 +114,29 @@ test.describe('Creating WiFi Item', () => {
     await mainPage.elementCheckBox(true)
     await mainPage.clickOnMainViewFavoriteIcon()
     await sideMenuPage.verifySideBarFavoritesFolder('1 items')
-    // await sideMenuPage.selectSideBarCategory('all')
-    // await mainPage.verifyElementTitle('WiFi Title')
-    // await mainPage.openElementDetails()
-    // await detailsPage.clickFavoriteButton()
-    // await sideMenuPage.openSideBarFolder('Favorites')
-    // await expect(detailsPage.getFavoriteAvatar('WT')).toBeVisible()
-    // await expect(mainPage.getElementFavoriteIcon('WT')).toBeVisible()
   })
 
   test('Remove via Favorite icon', async ({ page }) => {
-    // qase.id(2141)
+    qase.id(2141)
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.clickOnFirstElement()
     await mainPage.clickOnMainViewFavoriteIcon()
     await sideMenuPage.verifySideBarFavoritesFolder('0 items')
-    // await mainPage.openElementDetails()
-    // await detailsPage.clickFavoriteButton()
-    // await expect(detailsPage.getFavoriteAvatar('WT')).not.toBeVisible()
-    // await expect(mainPage.getElementFavoriteIcon('WT')).not.toBeVisible()
   })
 
   test('Add via More options', async ({ page }) => {
-    // qase.id(2142)
+    qase.id(2142)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickMarkAsFavoriteButton()
     await sideMenuPage.verifySideBarFavoritesFolder('1 items')
-    // await mainPage.openElementDetails()
-    // await detailsPage.openItemBarThreeDotsDropdownMenu()
-    // await detailsPage.clickMarkAsFavoriteButton()
-    // await expect(detailsPage.getFavoriteAvatar('WT')).toBeVisible()
-    // await expect(mainPage.getElementFavoriteIcon('WT')).toBeVisible()
   })
 
   test('Remove via More options', async ({ page }) => {
-    // qase.id(2143)
+    qase.id(2143)
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickRemoveFromFavoritesButton()
     await sideMenuPage.verifySideBarFavoritesFolder('0 items')
-    // await mainPage.openElementDetails()
-    // await detailsPage.openItemBarThreeDotsDropdownMenu()
-    // await detailsPage.clickRemoveFromFavoritesButton()
-    // await expect(detailsPage.getFavoriteAvatar('WT')).not.toBeVisible()
-    // await expect(mainPage.getElementFavoriteIcon('WT')).not.toBeVisible()
   })
 
   // test('Add Custom Note', async ({ page }) => {
@@ -188,7 +167,7 @@ test.describe('Creating WiFi Item', () => {
   // })
 
   test('Close via Cross icon', async ({ page }) => {
-    // qase.id(2146)
+    qase.id(2146)
     await mainPage.verifyElementTitle('WiFi Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -197,12 +176,10 @@ test.describe('Creating WiFi Item', () => {
   })
 
   test('Empty fields not displayed in view mode', async ({ page }) => {
-    // qase.id(2147)
+    qase.id(2147)
     await mainPage.verifyElementTitle('WiFi Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
-    // await createOrEditPage.fillCreateOrEditInput('wifi-name', '')
-    // await createOrEditPage.fillCreateOrEditInput('wifi-password', '')
     await createOrEditPage.fillCreateOrEditInput('wifi-comment', '')
 
     await createOrEditPage.clickOnCreateOrEditButton('wifi-save')

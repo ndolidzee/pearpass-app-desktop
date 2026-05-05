@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -57,13 +57,13 @@ test.describe('Editing/Deleting WiFi Item', () => {
     detailsPage = new DetailsPage(root)
   })
 
-  test.afterAll(async ({}) => {
+  test.afterAll(async ({ }) => {
     await utilities.deleteAllElements()
     await sideMenuPage.clickSidebarExitButton()
   })
 
   test('Verify that edited "WiFi" item fields are saved correctly', async ({ page }) => {
-    // qase.id(2148)
+    qase.id(2148)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('wifi-name', 'WiFi Title Edited')
@@ -91,7 +91,7 @@ test.describe('Editing/Deleting WiFi Item', () => {
   // })
 
   test('Empty fields are not displayed in view mode', async () => {
-    // qase.id(2150)
+    qase.id(2150)
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('wifi-comment', '')
     await createOrEditPage.clickOnCreateOrEditButton('wifi-save')

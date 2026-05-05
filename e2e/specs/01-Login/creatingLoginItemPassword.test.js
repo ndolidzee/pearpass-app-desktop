@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -64,7 +64,7 @@ test.describe('Password', () => {
   })
 
   test('Verify that the password was changed to a generic password, with "Safe" strength as the default option.', async () => {
-    // qase.id(2000)
+    qase.id(2000)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.openPasswordMenu()
@@ -77,7 +77,7 @@ test.describe('Password', () => {
   })
 
   test('Verify that password strength updates when the "special characters" switch is toggled', async () => {
-    // qase.id(2001)
+    qase.id(2001)
     const root = page.locator('body')
     await mainPage.openElementDetails()
     await detailsPage.editElement()

@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -59,7 +59,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Creating the "Credit Card" item', async ({ page }) => {
-    // qase.id(2115)
+    qase.id(2115)
     await createOrEditPage.fillCreateOrEditInput('creditcard-title', 'Credit Card Title')
     await createOrEditPage.fillCreateOrEditInput('creditcard-name', 'John')
     await createOrEditPage.fillCreateOrEditInput('creditcard-number', '1231 2312')
@@ -71,7 +71,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Viewing created item. Verify item details', async ({ page }) => {
-    // qase.id(2116)
+    qase.id(2116)
     await mainPage.verifyElementTitle('Credit Card Title')
     await mainPage.openElementDetails()
 
@@ -84,7 +84,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Password visibility icon displays/hides value', async ({ page }) => {
-    // qase.id(2117)
+    qase.id(2117)
     await mainPage.verifyElementTitle('Credit Card Title')
     await mainPage.openElementDetails()
     await detailsPage.verifyPasswordFieldType('card-details-multi-slot-input-slot-3', 'password')
@@ -93,7 +93,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   // test('Dropdown moves to selected item edit screen', async ({ page }) => {
-  //   // qase.id(2118)
+  // qase.id(2118)
   //   // NOTE: folder selector not yet implemented in credit card V2 modal
   //   await mainPage.verifyElementTitle('Credit Card Title')
   //   await sideMenuPage.clickSidebarAddButton()
@@ -108,7 +108,7 @@ test.describe('Creating Credit Card Item', async () => {
   // })
 
   // test('Item moved to folder (and cleanup)', async ({ page }) => {
-  //   // qase.id(2119)
+  // qase.id(2119)
   //   await sideMenuPage.verifySidebarFolderName('Test Folder')
   //   await mainPage.openElementDetails()
   //   await detailsPage.editElement()
@@ -120,7 +120,7 @@ test.describe('Creating Credit Card Item', async () => {
   // })
 
   test('Add via Favorite icon', async ({ page }) => {
-    // qase.id(2120)
+    qase.id(2120)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.elementCheckBox(false)
@@ -131,7 +131,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Remove via Favorite icon', async ({ page }) => {
-    // qase.id(2121)
+    qase.id(2121)
     await mainPage.clickMainViewHeaderSelect()
     await mainPage.clickOnFirstElement()
     await mainPage.clickOnMainViewFavoriteIcon()
@@ -139,7 +139,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Add via More options', async ({ page }) => {
-    // qase.id(2122)
+    qase.id(2122)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickMarkAsFavoriteButton()
@@ -147,7 +147,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('Remove via More options', async ({ page }) => {
-    // qase.id(2123)
+    qase.id(2123)
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickRemoveFromFavoritesButton()
     await sideMenuPage.verifySideBarFavoritesFolder('0 items')
@@ -182,7 +182,7 @@ test.describe('Creating Credit Card Item', async () => {
   // })
 
   test('Close via Cross icon', async ({ page }) => {
-    // qase.id(2126)
+    qase.id(2126)
     await mainPage.verifyElementTitle('Credit Card Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -191,7 +191,7 @@ test.describe('Creating Credit Card Item', async () => {
   })
 
   test('View uploaded file in Edit mode', async ({ page }) => {
-    // qase.id(2127)
+    qase.id(2127)
     await detailsPage.editElement()
     await createOrEditPage.clickOnAttachment()
     await createOrEditPage.uploadFile()
@@ -225,7 +225,7 @@ test.describe('Creating Credit Card Item', async () => {
   // })
 
   test('Empty fields not displayed in view mode', async ({ page }) => {
-    // qase.id(2129)
+    qase.id(2129)
     await mainPage.verifyElementTitle('Credit Card Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()

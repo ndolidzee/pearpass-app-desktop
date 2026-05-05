@@ -1,5 +1,5 @@
 import clipboard from 'clipboardy'
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -38,7 +38,7 @@ test.describe('Editing/Deleting PassPhrase Item', () => {
 
     await sideMenuPage.selectSideBarCategory('passPhrase')
     await utilities.deleteAllElements()
-     await mainPage.clickAddItem('passPhrase')
+    await mainPage.clickAddItem('passPhrase')
 
     await createOrEditPage.fillCreateOrEditInput('passphrase-title', 'PassPhrase Title')
     await clipboard.write(
@@ -47,13 +47,6 @@ test.describe('Editing/Deleting PassPhrase Item', () => {
     await createOrEditPage.clickOnPasteFromClipboard()
     await createOrEditPage.clickOnCreateOrEditButton('passphrase-save')
     await page.waitForTimeout(testData.timeouts.action)
-
-    // await createOrEditPage.fillCreateOrEditInput('title', 'PassPhrase Title')
-    // await clipboard.write(testData.passphrase.text12)
-    // await createOrEditPage.clickOnPasteFromClipboard()
-    // await createOrEditPage.clickOnCreateOrEditButton('save')
-
-    // await page.waitForTimeout(testData.timeouts.action)
   })
 
   test.beforeEach(async ({ app }) => {
@@ -73,7 +66,7 @@ test.describe('Editing/Deleting PassPhrase Item', () => {
   })
 
   test('Verify that edited "PassPhrase" item fields are saved correctly', async () => {
-    // qase.id(2658)
+    qase.id(2658)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput('passphrase-title', 'PassPhrase Title Edited')
@@ -115,13 +108,13 @@ test.describe('Editing/Deleting PassPhrase Item', () => {
   })
 
   test('Verify that the "PassPhrase" item is removed after deletion', async () => {
-    // qase.id(2221)
+    qase.id(2221)
     await utilities.deleteAllElements()
     await mainPage.verifyElementIsNotVisible()
   })
 
   test('Verify that the empty collection view is displayed on the Home screen after deleting the last item', async () => {
-    // qase.id(2222)
+    qase.id(2222)
     await sideMenuPage.selectSideBarCategory('all')
     await expect(mainPage.emptyCollectionView).toBeVisible()
   })

@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -64,7 +64,7 @@ test.describe('Editing/Deleting Custom Item', () => {
   })
 
   test('Verify that edited "Custom" item fields are saved correctly', async () => {
-    // qase.id(2572)
+    qase.id(2572)
     await mainPage.openElementDetails()
     await detailsPage.editElement()
     await createOrEditPage.fillCreateOrEditInput(
@@ -85,7 +85,7 @@ test.describe('Editing/Deleting Custom Item', () => {
   })
 
   test('Verify that custom "Note" fields are not saved in the edited "Custom" item', async () => {
-    // qase.id(2573)
+    qase.id(2573)
     await detailsPage.editElement()
     await createOrEditPage.deleteCustomNote()
     await createOrEditPage.clickOnCreateOrEditButton('custom-save')
@@ -93,13 +93,13 @@ test.describe('Editing/Deleting Custom Item', () => {
   })
 
   test('Verify that the "Custom Field" item is removed after deletion', async () => {
-    // qase.id(2574)
+    qase.id(2574)
     await utilities.deleteAllElements()
     await mainPage.verifyElementIsNotVisible()
   })
 
   test('Verify that the empty collection view is displayed on the Home screen after deleting the last item', async () => {
-    // qase.id(2575)
+    qase.id(2575)
     await sideMenuPage.selectSideBarCategory('all')
     await expect(mainPage.emptyCollectionView).toBeVisible()
   })

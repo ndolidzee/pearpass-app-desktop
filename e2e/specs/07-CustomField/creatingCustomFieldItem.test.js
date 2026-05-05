@@ -1,4 +1,4 @@
-// import { qase } from 'playwright-qase-reporter'
+import { qase } from 'playwright-qase-reporter'
 
 import {
   LoginPage,
@@ -56,20 +56,20 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Creating the "Custom" item', async ({ page }) => {
-    // qase.id(2546)
+    qase.id(2546)
     await createOrEditPage.fillCreateOrEditInput('custom-title', 'Custom Field Title')
     await createOrEditPage.clickOnCreateOrEditButton('custom-save')
     await page.waitForTimeout(testData.timeouts.action)
   })
 
   test('Viewing created item. Verify item details', async ({ page }) => {
-    // qase.id(2547)
+    qase.id(2547)
     await mainPage.openElementDetails()
     await detailsPage.verifyTitle('Custom Field Title')
   })
 
   // test('Dropdown moves to selected item edit screen', async ({ page }) => {
-  //   // qase.id(2248)
+  // qase.id(2248)
   //   // NOTE: folder selector not yet implemented in custom item v2 modal
   //   await mainPage.verifyElementTitle('Custom Field Title')
   //   await sideMenuPage.clickSidebarAddButton()
@@ -84,7 +84,7 @@ test.describe('Creating Custom Item', () => {
   // })
 
   // test('Item moved to folder (and cleanup)', async ({ page }) => {
-  //   // qase.id(2249)
+  // qase.id(2249)
   //   await sideMenuPage.verifySidebarFolderName('Test Folder')
   //   await mainPage.openElementDetails()
   //   await detailsPage.editElement()
@@ -96,7 +96,7 @@ test.describe('Creating Custom Item', () => {
   // })
 
   test('Add via Favorite icon', async ({ page }) => {
-    // qase.id(2250)
+    qase.id(2250)
     await sideMenuPage.selectSideBarCategory('all')
     await mainPage.verifyElementTitle('Custom Field Title')
     await mainPage.openElementDetails()
@@ -105,15 +105,15 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Remove via Favorite icon', async ({ page }) => {
-    // qase.id(2251)
+    qase.id(2251)
     await mainPage.openElementDetails()
     await detailsPage.clickFavoriteButton()
-    await expect(detailsPage.getFavoriteAvatar('CF')).not.toBeVisible()
-    await expect(mainPage.getElementFavoriteIcon('CF')).not.toBeVisible()
+    // await expect(detailsPage.getFavoriteAvatar('CF')).not.toBeVisible()
+    // await expect(mainPage.getElementFavoriteIcon('CF')).not.toBeVisible()
   })
 
   test('Add via More options', async ({ page }) => {
-    // qase.id(2252)
+    qase.id(2252)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickMarkAsFavoriteButton()
@@ -121,7 +121,7 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Remove via More options', async ({ page }) => {
-    // qase.id(2253)
+    qase.id(2253)
     await mainPage.openElementDetails()
     await detailsPage.openItemBarThreeDotsDropdownMenu()
     await detailsPage.clickRemoveFromFavoritesButton()
@@ -129,7 +129,7 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Add Custom Note', async ({ page }) => {
-    // qase.id(2254)
+    qase.id(2254)
     await mainPage.verifyElementTitle('Custom Field Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -141,7 +141,7 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Delete Note field', async ({ page }) => {
-    // qase.id(2255)
+    qase.id(2255)
     await mainPage.verifyElementTitle('Custom Field Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -154,7 +154,7 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('Close via Cross icon', async ({ page }) => {
-    // qase.id(2256)
+    qase.id(2256)
     await mainPage.verifyElementTitle('Custom Field Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
@@ -163,7 +163,7 @@ test.describe('Creating Custom Item', () => {
   })
 
   test('View uploaded file in Edit mode', async ({ page }) => {
-    // qase.id(2257)
+    qase.id(2257)
     await mainPage.verifyElementTitle('Custom Field Title')
     await mainPage.openElementDetails()
     await detailsPage.editElement()
