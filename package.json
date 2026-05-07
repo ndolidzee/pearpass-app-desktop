@@ -47,30 +47,6 @@
       ],
       "artifactName": "${productName}.${ext}"
     },
-    "snap": {
-      "base": "core22",
-      "confinement": "classic",
-      "grade": "stable",
-      "summary": "A fully local, open-source password manager for privacy and control",
-      "artifactName": "${productName}_${version}_${arch}.${ext}",
-      "plugs": [
-        "default",
-        {
-          "dot-config-pear": {
-            "interface": "personal-files",
-            "write": [
-              "$HOME/.config/pear"
-            ]
-          }
-        },
-        {
-          "shmem": {
-            "interface": "shared-memory",
-            "private": true
-          }
-        }
-      ]
-    },
     "toolsets": {
       "appimage": "1.0.2"
     },
