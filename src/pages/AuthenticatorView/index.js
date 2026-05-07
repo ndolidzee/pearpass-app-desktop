@@ -5,7 +5,8 @@ import { colors } from '@tetherto/pearpass-lib-ui-theme-provider'
 import {
   useRecords,
   isExpiring,
-  groupOtpRecords
+  groupOtpRecords,
+  RECORD_TYPES
 } from '@tetherto/pearpass-lib-vault'
 import { html } from 'htm/react'
 
@@ -100,7 +101,7 @@ export const AuthenticatorView = () => {
 
               <${EmptyStateCTAs}>
                 <${EmptyStatePrimaryButton}
-                  onClick=${() => handleCreateOrEditRecord({ recordType: 'login' })}
+                  onClick=${() => handleCreateOrEditRecord({ recordType: RECORD_TYPES.OTP })}
                 >
                   <${PlusIcon} size="16" color=${colors.grey500.mode1} />
                   ${i18n._('Add Code')}
