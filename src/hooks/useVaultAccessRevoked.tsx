@@ -28,9 +28,8 @@ export const useVaultAccessRevoked = () => {
       const vault = (vaults ?? []).find((v: Vault) => v.id === vaultId)
       const vaultName = vault?.name ?? vaultId
 
-      let remaining: Vault[]
       try {
-        remaining = await deleteVaultLocal(vaultId)
+        await deleteVaultLocal(vaultId)
       } catch (error) {
         logger.error(
           'useVaultAccessRevoked',
@@ -40,7 +39,9 @@ export const useVaultAccessRevoked = () => {
         return
       }
 
-      const next = remaining[0]
+      // Reconcile from current state minus the removed id rather than from
+      // the worklet's post-delete listVaults result.
+      const next = (vaults ?? []).find((v: Vault) => v.id !== vaultId)
       if (next) {
         await switchVault(next)
       } else {

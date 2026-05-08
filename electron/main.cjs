@@ -334,6 +334,12 @@ async function startRuntime() {
     }
   })
 
+  vaultClient.on('master-update', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('vault:master-update')
+    }
+  })
+
   pearRuntime.updater.on('updating', () => {
     if (mainWindow && !mainWindow.isDestroyed()) {
       logger.info('runtime:updating', 'sending updating event')
@@ -435,6 +441,12 @@ async function startWorkletOnly() {
   vaultClient.on('update', () => {
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('vault:update')
+    }
+  })
+
+  vaultClient.on('master-update', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('vault:master-update')
     }
   })
 }

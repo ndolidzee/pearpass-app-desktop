@@ -119,7 +119,7 @@ const VAULT_METHODS = [
 /**
  * Creates a proxy that implements the vault client interface over IPC.
  * Extends EventEmitter so removeAllListeners, removeListener, on, once, etc. are always available.
- * @param {{ vaultInvoke: (method: string, args: any[]) => Promise<{ok: boolean, data?: any, error?: string}>, vaultOnUpdate: (cb: () => void) => () => void }} api
+ * @param {{ vaultInvoke: (method: string, args: any[]) => Promise<{ok: boolean, data?: any, error?: string}>, vaultOnUpdate: (cb: () => void) => () => void, vaultOnMasterUpdate?: (cb: () => void) => () => void }} api
  * @returns {import('@tetherto/pearpass-lib-vault-core').PearpassVaultClient}
  */
 export function createElectronVaultClientProxy(api) {
@@ -127,6 +127,7 @@ export function createElectronVaultClientProxy(api) {
     constructor() {
       super()
       api.vaultOnUpdate(() => this.emit('update'))
+      api.vaultOnMasterUpdate?.(() => this.emit('master-update'))
       for (const method of VAULT_METHODS) {
         this[method] = async (...args) => {
           const serialized = args.map(toSerializableArg)

@@ -1,6 +1,8 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 import { useTheme } from '@tetherto/pearpass-lib-ui-kit'
+import { useVault, useVaults } from '@tetherto/pearpass-lib-vault'
+import { pearpassVaultClient } from '@tetherto/pearpass-lib-vault/src/instances'
 import { html } from 'htm/react'
 
 import { appConfig } from './appConfig'
@@ -8,19 +10,21 @@ import { useInactivity } from './hooks/useInactivity'
 import { useOnExtensionExit } from './hooks/useOnExtensionExit'
 import { useOnExtensionLockOut } from './hooks/useOnExtensionLockOut'
 import { useRedirect } from './hooks/useRedirect'
+import { ContentFrame, WindowBackground } from './styles'
 import { TitleBar } from '../../components/TitleBar'
+import { NAVIGATION_ROUTES } from '../../constants/navigation'
 import { AppHeaderContainer } from '../../containers/AppHeaderContainer'
 import { useRouter } from '../../context/RouterContext'
 import { usePearUpdate } from '../../hooks/usePearUpdate'
 import { useSimulatedLoading } from '../../hooks/useSimulatedLoading'
 import { useVaultAccessRevoked } from '../../hooks/useVaultAccessRevoked'
-import { Routes } from '../Routes'
-import { ContentFrame, WindowBackground } from './styles'
+import { useVaultSwitch } from '../../hooks/useVaultSwitch'
 import { isV2 } from '../../utils/designVersion'
+import { Routes } from '../Routes'
 
 export const App = () => {
   const { theme } = useTheme()
-  const { currentPage } = useRouter()
+  const { currentPage, navigate } = useRouter()
   usePearUpdate()
   const isSimulatedLoading = useSimulatedLoading()
   const [isLoadingPageComplete, setIsLoadingPageComplete] = useState(false)
@@ -32,17 +36,71 @@ export const App = () => {
   useOnExtensionLockOut()
 
   const { triggerAccessRevoked } = useVaultAccessRevoked()
+  const { data: vaultsForDevTrigger, refetch: refetchVaults } = useVaults()
+  const { data: activeVault } = useVault()
+  const { switchVault } = useVaultSwitch()
+
+  // Stable refs so the master-update subscription below stays attached for the
+  // lifetime of the App without re-running on every render.
+  const refetchVaultsRef = useRef(refetchVaults)
+  useEffect(() => {
+    refetchVaultsRef.current = refetchVaults
+  }, [refetchVaults])
+
+  useEffect(() => {
+    // Refresh the vault list when the master vault mutates from another
+    // process (e.g. extension deletes a vault). Local mutations already update
+    // redux via their thunk reducers.
+    if (!pearpassVaultClient?.on) return
+    const handler = () => {
+      void refetchVaultsRef.current()
+    }
+    pearpassVaultClient.on('master-update', handler)
+    return () => {
+      pearpassVaultClient.off?.('master-update', handler)
+    }
+  }, [])
+
+  useEffect(() => {
+    // If the active vault disappears from the master list (e.g. another
+    // process deleted it), switch to the first remaining vault, or navigate
+    // back to welcome if none are left.
+    if (!activeVault?.id || !vaultsForDevTrigger) return
+    if (vaultsForDevTrigger.some((v) => v.id === activeVault.id)) return
+    const next = vaultsForDevTrigger[0]
+    if (next) {
+      void switchVault(next)
+    } else {
+      navigate('welcome', { state: NAVIGATION_ROUTES.VAULTS })
+    }
+  }, [activeVault?.id, vaultsForDevTrigger, switchVault, navigate])
+
   useEffect(() => {
     // Dev hook: action-bus mechanism is not implemented yet, so for now the
     // delete handler is fired manually from devtools or tests.
     if (typeof window === 'undefined') return
+    const list = vaultsForDevTrigger ?? []
+    const devTrigger = (vaultIdOrName, deviceName) => {
+      const match =
+        list.find((v) => v.id === vaultIdOrName) ??
+        list.find((v) => v.name === vaultIdOrName)
+      if (!match) {
+        // eslint-disable-next-line no-console
+        console.error(
+          `[pearpassTriggerAccessRevoked] no vault matched "${vaultIdOrName}". Available:`,
+          list.map((v) => ({ id: v.id, name: v.name }))
+        )
+        return
+      }
+      return triggerAccessRevoked(match.id, deviceName)
+    }
     // eslint-disable-next-line no-underscore-dangle
-    window.__pearpassTriggerAccessRevoked = triggerAccessRevoked
+    window.__pearpassTriggerAccessRevoked = devTrigger
     return () => {
       // eslint-disable-next-line no-underscore-dangle
       delete window.__pearpassTriggerAccessRevoked
     }
-  }, [triggerAccessRevoked])
+  }, [triggerAccessRevoked, vaultsForDevTrigger])
 
   const handleLoadingComplete = useCallback(() => {
     setIsLoadingPageComplete(true)

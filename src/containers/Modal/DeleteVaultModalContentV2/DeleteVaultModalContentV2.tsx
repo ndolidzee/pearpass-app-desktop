@@ -15,6 +15,7 @@ import {
 import {
   useUserData,
   useVault,
+  useVaults,
   type Vault
 } from '@tetherto/pearpass-lib-vault'
 import {
@@ -53,6 +54,7 @@ export const DeleteVaultModalContentV2 = ({
   const handleClose = onClose ?? closeModal
 
   const { data: vaultData, deleteVaultLocal } = useVault()
+  const { data: allVaults } = useVaults()
   const devices = (vaultData as { devices?: unknown[] } | undefined)?.devices
   const deviceCount = Array.isArray(devices) ? devices.length : 0
 
@@ -100,9 +102,8 @@ export const DeleteVaultModalContentV2 = ({
 
       // TODO: broadcast deleteVault action to other devices when toggle is on.
 
-      let remainingVaults: Vault[]
       try {
-        remainingVaults = await deleteVaultLocal(vaultId)
+        await deleteVaultLocal(vaultId)
       } catch (error) {
         logger.error(
           'DeleteVaultModalContentV2',
@@ -118,7 +119,9 @@ export const DeleteVaultModalContentV2 = ({
         message: t('"{vaultName}" was deleted from this device', { vaultName })
       })
 
-      const nextVault = remainingVaults[0]
+      const nextVault = (allVaults ?? []).find(
+        (v: Vault) => v.id !== vaultId
+      )
       if (nextVault) {
         await switchVault(nextVault)
       } else {

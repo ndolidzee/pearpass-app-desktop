@@ -47,5 +47,10 @@ window.electronAPI = {
     ipcRenderer.on('vault:update', sub)
     return () => ipcRenderer.removeListener('vault:update', sub)
   },
+  vaultOnMasterUpdate: (cb) => {
+    const sub = () => cb()
+    ipcRenderer.on('vault:master-update', sub)
+    return () => ipcRenderer.removeListener('vault:master-update', sub)
+  },
   openExternal: (url) => ipcRenderer.invoke('shell:openExternal', url)
 }
