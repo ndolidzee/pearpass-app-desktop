@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { useLingui } from '@lingui/react'
 import { Button, Text, useTheme } from '@tetherto/pearpass-lib-ui-kit'
 import { ContentCopy } from '@tetherto/pearpass-lib-ui-kit/icons'
@@ -91,14 +93,11 @@ export const OtpCodeFieldV2 = ({
               }}
             />
           </div>
-          <Text
-            variant="caption"
-            style={
-              { color: timerColor, minWidth: 28, textAlign: 'right' } as object
-            }
-          >
-            {timeRemaining !== null ? `${timeRemaining}s` : ''}
-          </Text>
+          <div style={styles.timerLabel}>
+            <Text variant="caption" color={timerColor}>
+              {timeRemaining !== null ? `${timeRemaining}s` : ''}
+            </Text>
+          </div>
         </div>
       )}
 

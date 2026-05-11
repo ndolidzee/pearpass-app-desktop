@@ -34,7 +34,7 @@ export const createStyles = (colors: ThemeColors) => ({
     minWidth: 0,
     display: 'flex' as const,
     flexDirection: 'column' as const,
-    gap: 2
+    gap: `${rawTokens.spacing2}px`
   },
   timerRow: {
     display: 'flex' as const,
@@ -52,5 +52,9 @@ export const createStyles = (colors: ThemeColors) => ({
   timerFill: {
     height: '100%',
     borderRadius: `${rawTokens.radius8}px`
+  },
+  timerLabel: {
+    minWidth: 28,
+    textAlign: 'right' as const
   }
 })

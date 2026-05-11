@@ -35,11 +35,5 @@ export const createStyles = (colors: ThemeColors) => ({
     display: 'flex' as const,
     alignItems: 'center' as const,
     gap: `${rawTokens.spacing4}px`
-  },
-
-  rowRightElement: {
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: `${rawTokens.spacing4}px`
   }
 })

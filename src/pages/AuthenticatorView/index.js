@@ -233,11 +233,10 @@ export const AuthenticatorView = () => {
         onSelect=${() => handleRecordPress(record)}
         onClick=${() => handleRecordPress(record)}
         testID=${`authenticator-record-item-${record.id}`}
-        isCheckboxSelectable=${false}
         style=${listStyles.recordRow}
         rightElement=${!isMultiSelectOn
           ? html`
-              <div style=${styles.rowRightElement}>
+              <div style=${listStyles.rowRightElement}>
                 <${Text} variant="labelEmphasized"> ${formatOtpCode(code)} <//>
                 <${Button}
                   variant="tertiary"
@@ -408,13 +407,7 @@ export const AuthenticatorView = () => {
 
                       return html`
                         <div key=${period} style=${listStyles.section}>
-                          <div
-                            style=${{
-                              ...listStyles.sectionHeader,
-                              color: theme.colors.colorTextPrimary,
-                              cursor: 'default'
-                            }}
-                          >
+                          <div style=${listStyles.staticSectionHeader}>
                             <${TimerCircle}
                               timeRemaining=${timeRemaining}
                               period=${period}
@@ -443,13 +436,7 @@ export const AuthenticatorView = () => {
                   ${hotpRecords.length > 0 &&
                   html`
                     <div style=${listStyles.section}>
-                      <div
-                        style=${{
-                          ...listStyles.sectionHeader,
-                          color: theme.colors.colorTextPrimary,
-                          cursor: 'default'
-                        }}
-                      >
+                      <div style=${listStyles.staticSectionHeader}>
                         <span>${i18n._('Counter-based')}</span>
                       </div>
                       <div style=${listStyles.sectionList}>
