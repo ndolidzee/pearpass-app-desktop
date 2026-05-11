@@ -148,7 +148,7 @@ describe('AppHeaderContainer', () => {
     mockAuthenticatorEnabled = true
     useRouter.mockReturnValue({
       currentPage: 'vault',
-      data: { recordType: 'authenticator' },
+      data: { recordType: 'otp' },
       navigate: mockNavigate
     })
 
