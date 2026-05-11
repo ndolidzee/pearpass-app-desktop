@@ -13,6 +13,7 @@ import {
   ToggleSwitch
 } from '@tetherto/pearpass-lib-ui-kit'
 import {
+  useCreateVault,
   useUserData,
   useVault,
   useVaults,
@@ -24,12 +25,12 @@ import {
 } from '@tetherto/pearpass-lib-vault/src/utils/buffer'
 
 import { createStyles } from './DeleteVaultModalContentV2.styles'
-import { NAVIGATION_ROUTES } from '../../../constants/navigation'
 import { useModal } from '../../../context/ModalContext'
 import { useRouter } from '../../../context/RouterContext'
 import { useToast } from '../../../context/ToastContext'
 import { useTranslation } from '../../../hooks/useTranslation'
 import { useVaultSwitch } from '../../../hooks/useVaultSwitch'
+import { getDeviceName } from '../../../utils/getDeviceName'
 import { logger } from '../../../utils/logger'
 import { PairedDevicesModalContent } from '../PairedDevicesModalContent'
 
@@ -53,8 +54,9 @@ export const DeleteVaultModalContentV2 = ({
 
   const handleClose = onClose ?? closeModal
 
-  const { data: vaultData, deleteVaultLocal } = useVault()
+  const { data: vaultData, deleteVaultLocal, addDevice } = useVault()
   const { data: allVaults } = useVaults()
+  const { createVault } = useCreateVault()
   const devices = (vaultData as { devices?: unknown[] } | undefined)?.devices
   const deviceCount = Array.isArray(devices) ? devices.length : 0
 
@@ -125,7 +127,20 @@ export const DeleteVaultModalContentV2 = ({
       if (nextVault) {
         await switchVault(nextVault)
       } else {
-        navigate('welcome', { state: NAVIGATION_ROUTES.VAULTS })
+        try {
+          await createVault({ name: t('Personal') })
+          await addDevice(getDeviceName())
+          navigate('vault', { recordType: 'all' })
+          setToast({
+            message: t('A new "Personal" vault was created')
+          })
+        } catch (error) {
+          logger.error(
+            'DeleteVaultModalContentV2',
+            'failed to create fallback Personal vault:',
+            error
+          )
+        }
       }
     } finally {
       setIsLoading(false)

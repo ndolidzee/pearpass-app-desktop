@@ -1,12 +1,19 @@
 import React, { useCallback } from 'react'
 
-import { useVault, useVaults, type Vault } from '@tetherto/pearpass-lib-vault'
+import {
+  useCreateVault,
+  useVault,
+  useVaults,
+  type Vault
+} from '@tetherto/pearpass-lib-vault'
 
+import { useVaultSwitch } from './useVaultSwitch'
 import { AccessRemovedModalContent } from '../containers/Modal/AccessRemovedModalContent'
-import { NAVIGATION_ROUTES } from '../constants/navigation'
 import { useModal } from '../context/ModalContext'
 import { useRouter } from '../context/RouterContext'
-import { useVaultSwitch } from './useVaultSwitch'
+import { useToast } from '../context/ToastContext'
+import { useTranslation } from './useTranslation'
+import { getDeviceName } from '../utils/getDeviceName'
 import { logger } from '../utils/logger'
 
 /**
@@ -17,16 +24,20 @@ import { logger } from '../utils/logger'
  * for testing); will be wired into the action-bus once it lands.
  */
 export const useVaultAccessRevoked = () => {
+  const { t } = useTranslation()
   const { setModal } = useModal()
-  const { data: vaults } = useVaults()
-  const { deleteVaultLocal } = useVault()
-  const { switchVault } = useVaultSwitch()
+  const { setToast } = useToast()
   const { navigate } = useRouter()
+  const { data: vaults } = useVaults()
+  const { data: activeVault, deleteVaultLocal, addDevice } = useVault()
+  const { switchVault } = useVaultSwitch()
+  const { createVault } = useCreateVault()
 
   const triggerAccessRevoked = useCallback(
     async (vaultId: string, deviceName?: string) => {
       const vault = (vaults ?? []).find((v: Vault) => v.id === vaultId)
       const vaultName = vault?.name ?? vaultId
+      const wasActive = activeVault?.id === vaultId
 
       try {
         await deleteVaultLocal(vaultId)
@@ -39,13 +50,26 @@ export const useVaultAccessRevoked = () => {
         return
       }
 
-      // Reconcile from current state minus the removed id rather than from
-      // the worklet's post-delete listVaults result.
-      const next = (vaults ?? []).find((v: Vault) => v.id !== vaultId)
-      if (next) {
-        await switchVault(next)
-      } else {
-        navigate('welcome', { state: NAVIGATION_ROUTES.VAULTS })
+      if (wasActive) {
+        const next = (vaults ?? []).find((v: Vault) => v.id !== vaultId)
+        if (next) {
+          await switchVault(next)
+        } else {
+          try {
+            await createVault({ name: t('Personal') })
+            await addDevice(getDeviceName())
+            navigate('vault', { recordType: 'all' })
+            setToast({
+              message: t('A new "Personal" vault was created')
+            })
+          } catch (error) {
+            logger.error(
+              'useVaultAccessRevoked',
+              'failed to create fallback Personal vault:',
+              error
+            )
+          }
+        }
       }
 
       setModal(
@@ -55,7 +79,18 @@ export const useVaultAccessRevoked = () => {
         />
       )
     },
-    [vaults, deleteVaultLocal, switchVault, navigate, setModal]
+    [
+      vaults,
+      activeVault?.id,
+      deleteVaultLocal,
+      switchVault,
+      createVault,
+      addDevice,
+      navigate,
+      setModal,
+      setToast,
+      t
+    ]
   )
 
   return { triggerAccessRevoked }

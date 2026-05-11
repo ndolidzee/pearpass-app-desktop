@@ -12,7 +12,6 @@ import { useOnExtensionLockOut } from './hooks/useOnExtensionLockOut'
 import { useRedirect } from './hooks/useRedirect'
 import { ContentFrame, WindowBackground } from './styles'
 import { TitleBar } from '../../components/TitleBar'
-import { NAVIGATION_ROUTES } from '../../constants/navigation'
 import { AppHeaderContainer } from '../../containers/AppHeaderContainer'
 import { useRouter } from '../../context/RouterContext'
 import { usePearUpdate } from '../../hooks/usePearUpdate'
@@ -63,15 +62,19 @@ export const App = () => {
 
   useEffect(() => {
     // If the active vault disappears from the master list (e.g. another
-    // process deleted it), switch to the first remaining vault, or navigate
-    // back to welcome if none are left.
+    // process deleted it), switch to the first remaining vault. When none
+    // remain, fall through to the v2 vault view; the delete handler that
+    // initiated the removal will auto-create a fresh "Personal" vault.
+    // Routing to v1 welcome+VAULTS here caused a CardVaultSelect flash
+    // during local deletes because master-update refetches vaultsSlice to
+    // [] before deleteVaultLocal.fulfilled clears vaultSlice.data.
     if (!activeVault?.id || !vaultsForDevTrigger) return
     if (vaultsForDevTrigger.some((v) => v.id === activeVault.id)) return
     const next = vaultsForDevTrigger[0]
     if (next) {
       void switchVault(next)
     } else {
-      navigate('welcome', { state: NAVIGATION_ROUTES.VAULTS })
+      navigate('vault', { recordType: 'all' })
     }
   }, [activeVault?.id, vaultsForDevTrigger, switchVault, navigate])
 
