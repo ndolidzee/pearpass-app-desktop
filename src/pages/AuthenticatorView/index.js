@@ -360,7 +360,9 @@ export const AuthenticatorView = () => {
                         data-testid="authenticator-empty-add-code"
                         iconBefore=${html`<${Add} width=${16} height=${16} />`}
                         onClick=${() =>
-                          handleCreateOrEditRecord({ recordType: 'login' })}
+                          handleCreateOrEditRecord({
+                            recordType: RECORD_TYPES.OTP
+                          })}
                       >
                         ${i18n._('Add Code')}
                       <//>
