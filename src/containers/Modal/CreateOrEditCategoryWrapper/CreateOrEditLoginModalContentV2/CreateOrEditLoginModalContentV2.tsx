@@ -330,7 +330,7 @@ export const CreateOrEditLoginModalContentV2 = ({
           <MultiSlotInput testID='createoredit-authenticator-slot-v2'>
             <PasswordField
               label={t('Authenticator Secret Key')}
-              placeholder={t('Enter Secret Key (TOTP)')}
+              placeholder={t('Enter your key or URI')}
               value={otpSecretField.value}
               onChange={(e) => otpSecretField.onChange(e.target.value)}
               error={otpSecretField.error || undefined}
