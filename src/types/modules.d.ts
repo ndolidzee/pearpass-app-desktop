@@ -382,6 +382,10 @@ declare module '@tetherto/pearpass-lib-data-import' {
     data: unknown,
     fileType: string
   ): Promise<unknown[]>
+  export function decryptBitwardenJson(
+    encryptedData: string,
+    password: string
+  ): Promise<unknown[]>
 }
 
 declare module '@tetherto/pear-apps-lib-feedback' {
