@@ -57,7 +57,9 @@ export const ImportCodesContent = () => {
             >
               <ListItem
                 title={option.title}
-                subtitle={t('Required Format:') + ' ' + option.description}
+                subtitle={t('Required Format: {format}', {
+                  format: option.description
+                })}
                 testID={option.testID}
                 rightElement={
                   <KeyboardArrowRightFilled
