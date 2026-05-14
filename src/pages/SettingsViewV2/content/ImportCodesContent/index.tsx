@@ -17,6 +17,7 @@ import {
 } from '@tetherto/pearpass-lib-ui-kit/icons'
 
 import { useTranslation } from '../../../../hooks/useTranslation'
+import { ScanResultsView } from './ScanResultsView'
 import { createStyles } from './styles'
 
 type ImportCodesState = 'default' | 'upload'
@@ -49,11 +50,17 @@ export const ImportCodesContent = () => {
   const [selectedOption, setSelectedOption] =
     useState<ImportCodesOption | null>(null)
   const [files, setFiles] = useState<UploadedFile[]>([])
+  const [isScanned, setIsScanned] = useState(false)
 
-  const handleBack = () => {
+  const resetToDefault = () => {
     setState('default')
     setSelectedOption(null)
     setFiles([])
+    setIsScanned(false)
+  }
+
+  const handleBack = () => {
+    resetToDefault()
   }
 
   return (
@@ -171,14 +178,14 @@ export const ImportCodesContent = () => {
               variant="primary"
               size="small"
               disabled={files.length === 0}
-              onClick={() => {
-                // TODO: implement scan logic
-              }}
+              onClick={() => setIsScanned(true)}
               data-testid="import-codes-scan-file-button"
             >
               {t('Scan File')}
             </Button>
           </div>
+
+          {isScanned && <ScanResultsView onImportComplete={resetToDefault} />}
         </>
       )}
     </div>
