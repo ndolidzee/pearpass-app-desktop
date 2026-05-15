@@ -7,6 +7,7 @@ import { isV2 } from '../utils/designVersion'
 
 const mockDeleteRecord = jest.fn()
 const mockUpdateFavoriteState = jest.fn()
+const mockHandleCreateOrEditRecord = jest.fn()
 
 jest.mock(
   '../containers/Modal/MoveFolderModalContentV2/MoveFolderModalContentV2',
@@ -62,7 +63,7 @@ jest.mock('@lingui/react', () => ({
 
 jest.mock('./useCreateOrEditRecord', () => ({
   useCreateOrEditRecord: () => ({
-    handleCreateOrEditRecord: jest.fn()
+    handleCreateOrEditRecord: mockHandleCreateOrEditRecord
   })
 }))
 
@@ -221,5 +222,52 @@ describe('useRecordActionItems', () => {
     })
     expect(mockDeleteRecord).toHaveBeenCalledWith(['123'])
     expect(mockCloseModal).toHaveBeenCalled()
+  })
+
+  test('handles edit action — uses record type when no recordType prop given', () => {
+    const loginRecord = { id: '123', type: 'login', isFavorite: false }
+
+    const { result } = renderHook(() =>
+      useRecordActionItems({
+        record: loginRecord,
+        onSelect: mockOnSelect,
+        onClose: mockOnClose
+      })
+    )
+
+    const editAction = result.current.actions.find(
+      (action) => action.type === 'edit'
+    )
+    editAction.click()
+
+    expect(mockHandleCreateOrEditRecord).toHaveBeenCalledWith({
+      recordType: 'login',
+      initialRecord: loginRecord
+    })
+    expect(mockOnClose).toHaveBeenCalled()
+  })
+
+  test('handles edit action — uses OTP type when recordType is otp', () => {
+    const otpLoginRecord = { id: '123', type: 'login', isFavorite: false }
+
+    const { result } = renderHook(() =>
+      useRecordActionItems({
+        record: otpLoginRecord,
+        recordType: 'otp',
+        onSelect: mockOnSelect,
+        onClose: mockOnClose
+      })
+    )
+
+    const editAction = result.current.actions.find(
+      (action) => action.type === 'edit'
+    )
+    editAction.click()
+
+    expect(mockHandleCreateOrEditRecord).toHaveBeenCalledWith({
+      recordType: 'otp',
+      initialRecord: otpLoginRecord
+    })
+    expect(mockOnClose).toHaveBeenCalled()
   })
 })
