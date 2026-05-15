@@ -51,7 +51,7 @@ declare module '@tetherto/pearpass-lib-vault' {
       }
     ) => Promise<Vault | void>
     isVaultProtected: (vaultId: string | undefined) => Promise<boolean>
-    addDevice: (deviceName: string) => Promise<void>
+    addDevice: () => Promise<void>
     resetState: () => void
     updateUnprotectedVault: (
       vaultId: string,
@@ -108,6 +108,31 @@ declare module '@tetherto/pearpass-lib-vault' {
   export function createAlignedInterval(callback: () => void): () => void
   export function isExpiring(timeRemaining: number | null): boolean
   export const EXPIRY_THRESHOLD_SECONDS: number
+
+  export function validateOtpInput(
+    input: string | undefined | null
+  ): string | null
+
+  export function parseOtpInput(input: string | undefined | null): {
+    secret: string
+    type: 'TOTP' | 'HOTP'
+    algorithm: string
+    digits: number
+    period?: number
+    counter?: number
+    issuer?: string
+    label?: string
+  } | null
+
+  export function matchLoginRecords<
+    R extends { id: string; data?: Record<string, unknown> }
+  >(
+    parsedOtp: { issuer?: string; label?: string } | null | undefined,
+    loginRecords: R[]
+  ): Array<{
+    record: R
+    reasons: Array<'issuer-domain' | 'label-username'>
+  }>
 
   const otherExports: any
   export default otherExports
@@ -295,6 +320,23 @@ declare module '@tetherto/pearpass-lib-vault/src/utils/buffer' {
   export const stringToBuffer: (value: string) => any
 }
 
+declare module '@tetherto/pearpass-lib-vault/src/instances' {
+  export const pearpassVaultClient: {
+    decryptBitwardenExport: (params: {
+      password: string
+      salt: string
+      kdfType: number
+      kdfIterations: number
+      kdfMemory?: number
+      kdfParallelism?: number
+      cipherString: string
+    }) => Promise<string>
+    [key: string]: any
+  }
+  export const setPearpassVaultClient: (instance: unknown) => void
+  export const setStoragePath: (path: string) => Promise<void>
+}
+
 declare module '@tetherto/pearpass-lib-constants' {
   export const BLIND_PEERS_LIMIT: number
   export const BLIND_PEER_TYPE: {
@@ -383,6 +425,21 @@ declare module '@tetherto/pearpass-lib-data-import' {
     data: unknown,
     fileType: string
   ): Promise<unknown[]>
+  export function decryptBitwardenJson(
+    encryptedData: string,
+    password: string,
+    options?: {
+      decryptViaWorklet?: (params: {
+        password: string
+        salt: string
+        kdfType: number
+        kdfIterations: number
+        kdfMemory?: number
+        kdfParallelism?: number
+        cipherString: string
+      }) => Promise<string>
+    }
+  ): Promise<unknown>
 }
 
 declare module '@tetherto/pear-apps-lib-feedback' {

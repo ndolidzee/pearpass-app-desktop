@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useLingui } from '@lingui/react'
-import { RECORD_TYPES, useRecords } from '@tetherto/pearpass-lib-vault'
+import { useRecords } from '@tetherto/pearpass-lib-vault'
 import { html } from 'htm/react'
 
 import { useCreateOrEditRecord } from './useCreateOrEditRecord'
@@ -32,7 +32,6 @@ import { isV2 } from '../utils/designVersion'
 export const useRecordActionItems = ({
   excludeTypes = [],
   record,
-  recordType,
   onSelect,
   onClose
 } = {}) => {
@@ -85,8 +84,7 @@ export const useRecordActionItems = ({
 
   const handleEdit = () => {
     handleCreateOrEditRecord({
-      recordType:
-        recordType === RECORD_TYPES.OTP ? RECORD_TYPES.OTP : record?.type,
+      recordType: record?.type,
       initialRecord: record
     })
 
