@@ -58,9 +58,8 @@ export const DeleteVaultModalContentV2 = ({
   const { data: allVaults } = useVaults()
   const { createVault } = useCreateVault()
   const devices = (vaultData as { devices?: unknown[] } | undefined)?.devices
-  const otherDeviceCount = Array.isArray(devices)
-    ? Math.max(devices.length - 1, 0)
-    : 0
+  const deviceCount = Array.isArray(devices) ? devices.length : 0
+  const showEraseFromAllDevices = deviceCount > 1
 
   const { logIn } = useUserData()
 
@@ -235,44 +234,42 @@ export const DeleteVaultModalContentV2 = ({
           testID="delete-vault-password-v2"
         />
 
-        <div style={styles.eraseRow}>
-          <div style={styles.eraseLabel}>
-            <Text as="span" variant="label">
-              {t('Erase Vault from')}
-            </Text>
-            <span style={styles.eraseLink}>
-              <Link
-                onClick={() => setModal(<PairedDevicesModalContent />)}
-                data-testid="delete-vault-eraseall-link-v2"
-              >
-                {t(
-                  '{count, plural, one {# other device} other {# other devices}}',
-                  { count: otherDeviceCount }
-                )}
-              </Link>
-            </span>
-            <Text as="span" variant="label">
-              {t('with access')}
-            </Text>
-          </div>
-          <ToggleSwitch
-            checked={eraseFromAllDevices}
-            onChange={setEraseFromAllDevices}
-            aria-label={t('Erase vault from all devices')}
-            data-testid="delete-vault-eraseall-toggle-v2"
-          />
-        </div>
+        {showEraseFromAllDevices ? (
+          <>
+            <div style={styles.eraseRow}>
+              <div style={styles.eraseLabel}>
+                <Text as="span" variant="label">
+                  {t('Erase Vault from all')}
+                </Text>
+                <span style={styles.eraseLink}>
+                  <Link
+                    onClick={() => setModal(<PairedDevicesModalContent />)}
+                    data-testid="delete-vault-eraseall-link-v2"
+                  >
+                    {t('{count} devices', { count: deviceCount })}
+                  </Link>
+                </span>
+              </div>
+              <ToggleSwitch
+                checked={eraseFromAllDevices}
+                onChange={setEraseFromAllDevices}
+                aria-label={t('Erase vault from all devices')}
+                data-testid="delete-vault-eraseall-toggle-v2"
+              />
+            </div>
 
-        {eraseFromAllDevices ? (
-          <AlertMessage
-            variant="warning"
-            size="small"
-            title=""
-            description={t(
-              'The removal will take effect on all other devices the next time they access this vault.'
-            )}
-            testID="delete-vault-eraseall-alert-v2"
-          />
+            {eraseFromAllDevices ? (
+              <AlertMessage
+                variant="warning"
+                size="small"
+                title=""
+                description={t(
+                  'The removal will take effect on all other devices the next time they access this vault.'
+                )}
+                testID="delete-vault-eraseall-alert-v2"
+              />
+            ) : null}
+          </>
         ) : null}
 
         {submitError ? (
