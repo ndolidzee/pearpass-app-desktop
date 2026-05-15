@@ -161,6 +161,10 @@ export class VaultHandlers {
     return { success: true }
   }
 
+  async activeVaultGetWriterKey() {
+    return await this.client.activeVaultGetWriterKey()
+  }
+
   async pairActiveVault(params) {
     return await this.client.pairActiveVault(params.inviteCode)
   }
