@@ -273,6 +273,16 @@ declare module '@tetherto/pearpass-lib-vault' {
     failures: Array<{ targetDeviceId: string; error: Error }>
   }>
 
+  export function broadcastDeleteVault(vaultId: string): Promise<{
+    results: Array<{
+      targetDeviceId: string
+      timestamp: string
+      actionId: string
+      key: string
+    }>
+    failures: Array<{ targetDeviceId: string; error: Error }>
+  }>
+
   export function closeAllInstances(): Promise<void>
 
   export function useRecordCountsByType(): {
