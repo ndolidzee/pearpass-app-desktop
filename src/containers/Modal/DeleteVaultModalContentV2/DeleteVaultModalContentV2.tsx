@@ -90,6 +90,7 @@ export const DeleteVaultModalContentV2 = ({
 
     try {
       try {
+        // Reused for password verification - throws on a wrong password.
         await logIn({ password: passwordBuffer })
       } catch {
         setSubmitError(t('Invalid master password'))
