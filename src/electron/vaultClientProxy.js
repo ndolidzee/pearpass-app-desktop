@@ -116,6 +116,7 @@ const VAULT_METHODS = [
   'removeOtpFromRecord',
   'fetchFavicon',
   'decryptExportData',
+  'decryptBitwardenExport',
   'activeVaultFind',
   'activeVaultGetWriterKey',
   'personalSwarmInit',
