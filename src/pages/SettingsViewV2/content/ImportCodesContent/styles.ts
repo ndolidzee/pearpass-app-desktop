@@ -21,5 +21,33 @@ export const createStyles = (colors: ThemeColors) => ({
 
   listItemBorder: {
     borderBottom: `1px solid ${colors.colorSurfaceDisabled}`
+  },
+
+  header: {
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    gap: `${rawTokens.spacing6}px`
+  },
+
+  backButton: {
+    display: 'flex' as const,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: `${rawTokens.spacing4}px`,
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer' as const
+  },
+
+  uploadArea: {
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    gap: `${rawTokens.spacing12}px`
+  },
+
+  footer: {
+    display: 'flex' as const,
+    justifyContent: 'flex-end' as const
   }
 })
