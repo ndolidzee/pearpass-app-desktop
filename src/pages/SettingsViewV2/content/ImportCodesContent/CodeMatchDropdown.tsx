@@ -7,7 +7,7 @@ import {
   Text,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
-import { Extension } from '@tetherto/pearpass-lib-ui-kit/icons'
+import { Link } from '@tetherto/pearpass-lib-ui-kit/icons'
 
 import { RecordItemIcon } from '../../../../components/RecordItemIcon/RecordItemIcon'
 import { useTranslation } from '../../../../hooks/useTranslation'
@@ -173,7 +173,7 @@ export const CodeMatchDropdown = ({
                 title={record.data?.title ?? ''}
                 subtitle={getRecordSubtitle(record) || undefined}
                 rightElement={
-                  <Extension
+                  <Link
                     width={16}
                     height={16}
                     color={theme.colors.colorTextTertiary}

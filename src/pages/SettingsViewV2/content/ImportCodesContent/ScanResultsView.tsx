@@ -7,11 +7,7 @@ import {
   Text,
   useTheme
 } from '@tetherto/pearpass-lib-ui-kit'
-import {
-  Close,
-  ExpandMore,
-  Extension
-} from '@tetherto/pearpass-lib-ui-kit/icons'
+import { LinkOff, ExpandMore, Link } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { useRecords } from '@tetherto/pearpass-lib-vault'
 
 import { RecordItemIcon } from '../../../../components/RecordItemIcon/RecordItemIcon'
@@ -173,7 +169,7 @@ export const ScanResultsView = ({ onImportComplete }: ScanResultsViewProps) => {
                         />
                       ) : (
                         <div style={styles.noMatchIcon}>
-                          <Close
+                          <LinkOff
                             width={16}
                             height={16}
                             color={theme.colors.colorTextSecondary}
@@ -232,7 +228,7 @@ export const ScanResultsView = ({ onImportComplete }: ScanResultsViewProps) => {
                       variant="secondary"
                       size="small"
                       iconBefore={
-                        <Close
+                        <LinkOff
                           width={16}
                           height={16}
                           color={theme.colors.colorTextPrimary}
@@ -253,7 +249,7 @@ export const ScanResultsView = ({ onImportComplete }: ScanResultsViewProps) => {
                       variant="secondary"
                       size="small"
                       iconBefore={
-                        <Extension
+                        <Link
                           width={16}
                           height={16}
                           color={theme.colors.colorTextPrimary}
