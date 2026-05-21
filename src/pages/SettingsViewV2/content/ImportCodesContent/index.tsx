@@ -223,7 +223,7 @@ export const ImportCodesContent = () => {
           <div style={styles.uploadArea}>
             <UploadField
               acceptedFormats={selectedOption.accepts}
-              maxFiles={selectedOption.multiFile ? 10 : 1}
+              maxFiles={selectedOption.multiFile ? 0 : 1}
               files={files}
               onFilesChange={handleFilesChange}
               uploadLinkText={t('Upload file')}
