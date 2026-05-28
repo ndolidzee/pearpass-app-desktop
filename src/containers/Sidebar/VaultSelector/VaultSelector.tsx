@@ -55,10 +55,14 @@ export const VaultSelector = ({ onClose }: VaultSelectorProps = {}) => {
   const { data: activeVault } = useVault()
   const { data: inviteData, createInvite } = useInvite()
 
-  const vaults = useMemo<Vault[]>(
-    () => sortByName(vaultsData ?? []),
-    [vaultsData]
-  )
+  const vaults = useMemo<Vault[]>(() => {
+    const sorted = sortByName(vaultsData ?? [])
+    if (!activeVault) return sorted
+    return [
+      ...sorted.filter((v) => v.id === activeVault.id),
+      ...sorted.filter((v) => v.id !== activeVault.id)
+    ]
+  }, [vaultsData, activeVault])
 
   const iconPrimary = { color: theme.colors.colorTextPrimary }
   const iconSecondary = { color: theme.colors.colorTextSecondary }
