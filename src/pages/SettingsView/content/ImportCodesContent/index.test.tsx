@@ -3,9 +3,14 @@ import React from 'react'
 import '@testing-library/jest-dom'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
-import { normalizeImport } from '@tetherto/pearpass-lib-data-import'
+import {
+  normalizeImport,
+  normalizeProtonAuthenticator
+} from '@tetherto/pearpass-lib-data-import'
+import { decryptProtonExport } from '@tetherto/pearpass-lib-vault'
 
 import { decodeQrFromImage } from '../../../../features/qr-decoder/decodeQrFromImage'
+import { readFileContent } from '../../../../pages/SettingsView/utils/readFileContent'
 import { ImportCodesContent } from './index'
 ;(globalThis as { React?: typeof React }).React = React
 
@@ -19,8 +24,17 @@ jest.mock('../../../../features/qr-decoder/decodeQrFromImage', () => ({
   decodeQrFromImage: jest.fn()
 }))
 
+jest.mock('../../../../pages/SettingsView/utils/readFileContent', () => ({
+  readFileContent: jest.fn()
+}))
+
 jest.mock('@tetherto/pearpass-lib-data-import', () => ({
-  normalizeImport: jest.fn()
+  normalizeImport: jest.fn(),
+  normalizeProtonAuthenticator: jest.fn()
+}))
+
+jest.mock('@tetherto/pearpass-lib-vault', () => ({
+  decryptProtonExport: jest.fn()
 }))
 
 jest.mock('./ScanResultsView', () => ({
@@ -51,6 +65,7 @@ jest.mock('./styles', () => ({
     backButton: {},
     header: {},
     uploadArea: {},
+    passwordSection: {},
     footer: {}
   })
 }))
@@ -87,6 +102,23 @@ jest.mock('@tetherto/pearpass-lib-ui-kit', () => ({
   ),
   AlertMessage: (props: { testID?: string; description?: string }) => (
     <div data-testid={props.testID}>{props.description}</div>
+  ),
+  PasswordField: (props: {
+    testID?: string
+    value?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    error?: string
+  }) => (
+    <>
+      <input
+        data-testid={props.testID}
+        value={props.value ?? ''}
+        onChange={props.onChange}
+      />
+      {props.error && (
+        <span data-testid={`${props.testID}-error`}>{props.error}</span>
+      )}
+    </>
   ),
   UploadField: (props: {
     testID?: string
@@ -141,6 +173,11 @@ jest.mock('@tetherto/pearpass-lib-ui-kit/icons', () => ({
 
 const mockDecodeQrFromImage = jest.mocked(decodeQrFromImage)
 const mockNormalizeImport = jest.mocked(normalizeImport)
+const mockNormalizeProtonAuthenticator = jest.mocked(
+  normalizeProtonAuthenticator
+)
+const mockReadFileContent = jest.mocked(readFileContent)
+const mockDecryptProtonExport = jest.mocked(decryptProtonExport)
 
 const MOCK_OTP_RECORD = {
   label: 'alice@example.com',
@@ -157,6 +194,11 @@ function renderAndSelectSource() {
   fireEvent.click(
     screen.getByTestId('settings-import-codes-google-authenticator')
   )
+}
+
+function renderAndSelectProton() {
+  render(<ImportCodesContent />)
+  fireEvent.click(screen.getByTestId('settings-import-codes-proton-2fa'))
 }
 
 describe('ImportCodesContent', () => {
@@ -383,6 +425,230 @@ describe('ImportCodesContent', () => {
       ).toBeInTheDocument()
       expect(
         screen.queryByTestId('mock-scan-results-view')
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Proton 2FA import', () => {
+    it('shows Proton 2FA in the source list', () => {
+      render(<ImportCodesContent />)
+      expect(
+        screen.getByTestId('settings-import-codes-proton-2fa')
+      ).toBeInTheDocument()
+    })
+
+    it('shows upload step when Proton 2FA is selected', () => {
+      renderAndSelectProton()
+      expect(
+        screen.getByTestId('import-codes-upload-field')
+      ).toBeInTheDocument()
+    })
+
+    it('shows the Proton 2FA title in the heading', () => {
+      renderAndSelectProton()
+      expect(
+        screen.getByRole('heading', { name: /Proton 2FA/ })
+      ).toBeInTheDocument()
+    })
+
+    it('shows ScanResultsView after a successful Proton 2FA import', async () => {
+      mockReadFileContent.mockResolvedValue('{"entries":[]}')
+      mockNormalizeProtonAuthenticator.mockReturnValue([MOCK_OTP_RECORD])
+
+      renderAndSelectProton()
+      fireEvent.click(screen.getByTestId('mock-upload-add'))
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('import-codes-scan-file-button')
+        ).not.toBeDisabled()
+      )
+      fireEvent.click(screen.getByTestId('import-codes-scan-file-button'))
+
+      await waitFor(() => {
+        expect(screen.getByTestId('mock-scan-results-view')).toBeInTheDocument()
+      })
+    })
+
+    it('calls readFileContent and normalizeProtonAuthenticator with file content', async () => {
+      const jsonContent =
+        '{"entries":[{"content":{"uri":"otpauth://totp/test?secret=ABC"}}]}'
+      mockReadFileContent.mockResolvedValue(jsonContent)
+      mockNormalizeProtonAuthenticator.mockReturnValue([MOCK_OTP_RECORD])
+
+      renderAndSelectProton()
+      fireEvent.click(screen.getByTestId('mock-upload-add'))
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('import-codes-scan-file-button')
+        ).not.toBeDisabled()
+      )
+      fireEvent.click(screen.getByTestId('import-codes-scan-file-button'))
+
+      await waitFor(() => {
+        expect(mockReadFileContent).toHaveBeenCalledTimes(1)
+      })
+      expect(mockNormalizeProtonAuthenticator).toHaveBeenCalledWith(jsonContent)
+    })
+
+    it('does NOT call decodeQrFromImage for Proton 2FA', async () => {
+      mockReadFileContent.mockResolvedValue('{"entries":[]}')
+      mockNormalizeProtonAuthenticator.mockReturnValue([])
+
+      renderAndSelectProton()
+      fireEvent.click(screen.getByTestId('mock-upload-add'))
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('import-codes-scan-file-button')
+        ).not.toBeDisabled()
+      )
+      fireEvent.click(screen.getByTestId('import-codes-scan-file-button'))
+
+      await waitFor(() => {
+        expect(mockNormalizeProtonAuthenticator).toHaveBeenCalledTimes(1)
+      })
+      expect(mockDecodeQrFromImage).not.toHaveBeenCalled()
+    })
+
+    it('shows an error alert when normalizeProtonAuthenticator throws', async () => {
+      mockReadFileContent.mockResolvedValue('not valid json')
+      mockNormalizeProtonAuthenticator.mockImplementation(() => {
+        throw new Error('normalizeProtonAuthenticator: invalid JSON')
+      })
+
+      renderAndSelectProton()
+      fireEvent.click(screen.getByTestId('mock-upload-add'))
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('import-codes-scan-file-button')
+        ).not.toBeDisabled()
+      )
+      fireEvent.click(screen.getByTestId('import-codes-scan-file-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('import-codes-scan-error')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.getByTestId('import-codes-scan-error').textContent
+      ).toContain('normalizeProtonAuthenticator: invalid JSON')
+      expect(
+        screen.queryByTestId('mock-scan-results-view')
+      ).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Proton 2FA encrypted import', () => {
+    const ENCRYPTED_CONTENT = JSON.stringify({
+      version: 1,
+      salt: 'test-salt',
+      content: 'encrypted-content'
+    })
+
+    async function renderToPasswordScreen() {
+      mockReadFileContent.mockResolvedValue(ENCRYPTED_CONTENT)
+      renderAndSelectProton()
+      fireEvent.click(screen.getByTestId('mock-upload-add'))
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('import-codes-scan-file-button')
+        ).not.toBeDisabled()
+      )
+      fireEvent.click(screen.getByTestId('import-codes-scan-file-button'))
+      return screen.findByTestId('import-codes-password-field')
+    }
+
+    it('shows the password field when an encrypted file is uploaded', async () => {
+      const passwordField = await renderToPasswordScreen()
+      expect(passwordField).toBeInTheDocument()
+    })
+
+    it('hides the upload field and shows the password field', async () => {
+      await renderToPasswordScreen()
+      expect(
+        screen.queryByTestId('import-codes-upload-field')
+      ).not.toBeInTheDocument()
+      expect(
+        screen.getByTestId('import-codes-password-field')
+      ).toBeInTheDocument()
+    })
+
+    it('decrypts and shows ScanResultsView with the correct password', async () => {
+      const decryptedContent = '{"entries":[]}'
+      mockDecryptProtonExport.mockResolvedValue(decryptedContent)
+      mockNormalizeProtonAuthenticator.mockReturnValue([MOCK_OTP_RECORD])
+
+      const passwordField = await renderToPasswordScreen()
+      fireEvent.change(passwordField, { target: { value: 'correct-password' } })
+
+      const importButton = screen.getByTestId('import-codes-import-button')
+      fireEvent.click(importButton)
+
+      await waitFor(() => {
+        expect(mockDecryptProtonExport).toHaveBeenCalledWith({
+          version: 1,
+          salt: 'test-salt',
+          content: 'encrypted-content',
+          password: 'correct-password'
+        })
+      })
+      expect(mockNormalizeProtonAuthenticator).toHaveBeenCalledWith(
+        decryptedContent
+      )
+      expect(screen.getByTestId('mock-scan-results-view')).toBeInTheDocument()
+    })
+
+    it('shows a password field error on wrong password', async () => {
+      mockDecryptProtonExport.mockRejectedValue(new Error('Incorrect password'))
+
+      const passwordField = await renderToPasswordScreen()
+      fireEvent.change(passwordField, { target: { value: 'wrong-password' } })
+
+      fireEvent.click(screen.getByTestId('import-codes-import-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('import-codes-password-field-error')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.getByTestId('import-codes-password-field-error').textContent
+      ).toContain('Failed to decrypt file')
+      expect(
+        screen.queryByTestId('mock-scan-results-view')
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows a general error alert for non-password decrypt errors', async () => {
+      mockDecryptProtonExport.mockRejectedValue(new Error('Corrupt file data'))
+
+      const passwordField = await renderToPasswordScreen()
+      fireEvent.change(passwordField, { target: { value: 'some-password' } })
+
+      fireEvent.click(screen.getByTestId('import-codes-import-button'))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('import-codes-scan-error')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.getByTestId('import-codes-scan-error').textContent
+      ).toContain('Corrupt file data')
+    })
+
+    it('navigates back to the upload screen from the password screen', async () => {
+      await renderToPasswordScreen()
+
+      fireEvent.click(screen.getByRole('button', { name: 'back' }))
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('import-codes-upload-field')
+        ).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByTestId('import-codes-password-field')
       ).not.toBeInTheDocument()
     })
   })

@@ -46,6 +46,12 @@ export const createStyles = (colors: ThemeColors) => ({
     gap: `${rawTokens.spacing12}px`
   },
 
+  passwordSection: {
+    display: 'flex' as const,
+    flexDirection: 'column' as const,
+    gap: `${rawTokens.spacing12}px`
+  },
+
   footer: {
     display: 'flex' as const,
     justifyContent: 'flex-end' as const
