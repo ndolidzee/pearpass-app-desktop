@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import type {
   OTPRecord,
@@ -53,9 +53,13 @@ export const ImportCodesContent = () => {
   const [importedCodes, setImportedCodes] = useState<OTPRecord[]>([])
   const [importError, setImportError] = useState<string | null>(null)
 
-  const schema = Validator.object({
-    password: Validator.string().required(t('Password is required'))
-  })
+  const schema = useMemo(
+    () =>
+      Validator.object({
+        password: Validator.string().required(t('Password is required'))
+      }),
+    [t]
+  )
 
   const { register, handleSubmit, setErrors, setValues, values } = useForm({
     initialValues: { password: '' },
@@ -64,30 +68,33 @@ export const ImportCodesContent = () => {
 
   const { onChange: onChangePassword, ...passwordProps } = register('password')
 
-  const importCodesOptions: ImportCodesOption[] = [
-    {
-      type: ImportCodesOptionType.GoogleAuthenticator,
-      title: 'Google Authenticator',
-      description: t(
-        'To import your codes, open Google Authenticator, tap the menu, go to Transfer accounts, and select Export accounts. Once the export is complete, one or more QR codes will be generated that you can upload here.'
-      ),
-      learnMoreUrl: 'https://support.google.com/accounts/answer/1066447',
-      accepts: ['.png', '.jpg', '.jpeg'],
-      multiFile: true,
-      testID: 'settings-import-codes-google-authenticator'
-    },
-    {
-      type: ImportCodesOptionType.Proton2FA,
-      title: 'Proton 2FA',
-      description: t(
-        'To import your codes, open Proton 2FA, go to Settings, and select Export. Once the export is complete, a file will be generated that you can upload here.'
-      ),
-      learnMoreUrl: 'https://proton.me/support/proton-authenticator',
-      accepts: ['.txt'],
-      multiFile: false,
-      testID: 'settings-import-codes-proton-2fa'
-    }
-  ]
+  const importCodesOptions: ImportCodesOption[] = useMemo(
+    () => [
+      {
+        type: ImportCodesOptionType.GoogleAuthenticator,
+        title: t('Google Authenticator'),
+        description: t(
+          'To import your codes, open Google Authenticator, tap the menu, go to Transfer accounts, and select Export accounts. Once the export is complete, one or more QR codes will be generated that you can upload here.'
+        ),
+        learnMoreUrl: 'https://support.google.com/accounts/answer/1066447',
+        accepts: ['.png', '.jpg', '.jpeg'],
+        multiFile: true,
+        testID: 'settings-import-codes-google-authenticator'
+      },
+      {
+        type: ImportCodesOptionType.Proton2FA,
+        title: t('Proton 2FA'),
+        description: t(
+          'To import your codes, open Proton 2FA, go to Settings, and select Export. Once the export is complete, a file will be generated that you can upload here.'
+        ),
+        learnMoreUrl: 'https://proton.me/support/proton-authenticator',
+        accepts: ['.txt'],
+        multiFile: false,
+        testID: 'settings-import-codes-proton-2fa'
+      }
+    ],
+    [t]
+  )
 
   const resetToDefault = () => {
     setState('default')
@@ -384,7 +391,7 @@ export const ImportCodesContent = () => {
                   onClick={handleSubmit(handleImportEncrypted)}
                   data-testid="import-codes-import-button"
                 >
-                  {t('Scan file')}
+                  {t('Scan File')}
                 </Button>
               ) : (
                 <Button
