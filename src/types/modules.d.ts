@@ -244,6 +244,12 @@ declare module '@tetherto/pearpass-lib-vault' {
     encryptedData: unknown,
     password: string
   ): Promise<unknown>
+  export function decryptProtonExport(params: {
+    version: number
+    salt: string
+    content: string
+    password: string
+  }): Promise<string>
   export function useCreateRecord(options?: {
     onCompleted?: (payload: unknown) => void
     onError?: (error: Error) => void
@@ -545,6 +551,7 @@ declare module '@tetherto/pearpass-lib-data-import' {
   }
 
   export function normalizeImport(input: string | string[]): NormalizeResult
+  export function normalizeProtonAuthenticator(txt: string): OTPRecord[]
   export function detectProvider(input: unknown): string
   export function parseOtpUri(uri: string): OTPRecord
   export function decodeMigrationUri(uri: string): unknown

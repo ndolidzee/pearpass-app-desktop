@@ -69,7 +69,10 @@ export const ScanResultsView = ({
     () =>
       importedCodes.map((code) => {
         const matches = matchLoginRecords(
-          { issuer: code.issuer, label: code.label },
+          {
+            label: code.label,
+            ...(code.issuer ? { issuer: code.issuer } : {})
+          },
           loginRecords
         )
         return {
@@ -175,9 +178,8 @@ export const ScanResultsView = ({
             {
               type: RECORD_TYPES.LOGIN,
               data: {
-                title: entry.code.issuer ?? entry.code.label,
-                otpInput,
-                username: entry.code.label
+                title: entry.code.label,
+                otpInput
               }
             },
             onError
@@ -245,6 +247,7 @@ export const ScanResultsView = ({
             const isLast = index === codeMatches.length - 1
             const divider = isLast ? {} : styles.tableCellRowDivider
             const codeKey = `${index}-${entry.code.label}`
+
             return (
               <div key={codeKey} style={styles.tableRow}>
                 <div style={{ ...styles.tableCell1, ...divider }}>
@@ -253,14 +256,14 @@ export const ScanResultsView = ({
                       <RecordItemIcon
                         record={{
                           type: 'login',
-                          data: { title: entry.code.issuer ?? entry.code.label }
+                          data: { title: entry.code.label }
                         }}
                         size={32}
                       />
                     }
                     iconSize={32}
-                    title={entry.code.issuer ?? entry.code.label}
-                    subtitle={entry.code.label}
+                    title={entry.code.label}
+                    subtitle={entry.code.issuer ? entry.code.issuer : undefined}
                   />
                 </div>
 

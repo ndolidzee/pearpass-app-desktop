@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import type {
   OTPRecord,
   NormalizeResult
 } from '@tetherto/pearpass-lib-data-import'
-import { normalizeImport } from '@tetherto/pearpass-lib-data-import'
+import {
+  normalizeImport,
+  normalizeProtonAuthenticator
+} from '@tetherto/pearpass-lib-data-import'
+import { useForm } from '@tetherto/pear-apps-lib-ui-react-hooks'
+import { Validator } from '@tetherto/pear-apps-utils-validator'
+import { decryptProtonExport } from '@tetherto/pearpass-lib-vault'
 import type { UploadedFile } from '@tetherto/pearpass-lib-ui-kit'
 import {
   AlertMessage,
@@ -12,6 +18,7 @@ import {
   Link,
   ListItem,
   PageHeader,
+  PasswordField,
   Text,
   Title,
   UploadField,
@@ -24,31 +31,12 @@ import {
 
 import { decodeQrFromImage } from '../../../../features/qr-decoder/decodeQrFromImage'
 import { useTranslation } from '../../../../hooks/useTranslation'
+import { readFileContent } from '../../../SettingsView/utils/readFileContent'
 import { ScanResultsView } from './ScanResultsView'
 import { createStyles } from './styles'
-
-type ImportCodesState = 'default' | 'upload'
-
-type ImportCodesOption = {
-  title: string
-  description: string
-  learnMoreUrl?: string
-  accepts: string[]
-  multiFile?: boolean
-  testID?: string
-}
-
-const importCodesOptions: ImportCodesOption[] = [
-  {
-    title: 'Google Authenticator',
-    description:
-      'To import your codes, open Google Authenticator, tap the menu, go to Transfer accounts, and select Export accounts. Once the export is complete, one or more QR codes will be generated that you can upload here.',
-    learnMoreUrl: 'https://support.google.com/accounts/answer/1066447',
-    accepts: ['.png', '.jpg', '.jpeg'],
-    multiFile: true,
-    testID: 'settings-import-codes-google-authenticator'
-  }
-]
+import { parseCodeJsonContent, detectIsCodeFileEncrypted } from './utils'
+import type { CodeFileInfo, ImportCodesOption, ImportCodesState } from './types'
+import { ImportCodesOptionType } from './types'
 
 export const ImportCodesContent = () => {
   const { t } = useTranslation()
@@ -59,64 +47,196 @@ export const ImportCodesContent = () => {
   const [selectedOption, setSelectedOption] =
     useState<ImportCodesOption | null>(null)
   const [files, setFiles] = useState<UploadedFile[]>([])
+  const [codeFileInfo, setCodeFileInfo] = useState<CodeFileInfo | null>(null)
   const [isScanned, setIsScanned] = useState(false)
   const [isScanning, setIsScanning] = useState(false)
   const [importedCodes, setImportedCodes] = useState<OTPRecord[]>([])
   const [importError, setImportError] = useState<string | null>(null)
 
+  const schema = useMemo(
+    () =>
+      Validator.object({
+        password: Validator.string().required(t('Password is required'))
+      }),
+    [t]
+  )
+
+  const { register, handleSubmit, setErrors, setValues, values } = useForm({
+    initialValues: { password: '' },
+    validate: (vals: { password: string }) => schema.validate(vals)
+  })
+
+  const { onChange: onChangePassword, ...passwordProps } = register('password')
+
+  const importCodesOptions: ImportCodesOption[] = useMemo(
+    () => [
+      {
+        type: ImportCodesOptionType.GoogleAuthenticator,
+        title: t('Google Authenticator'),
+        description: t(
+          'To import your codes, open Google Authenticator, tap the menu, go to Transfer accounts, and select Export accounts. Once the export is complete, one or more QR codes will be generated that you can upload here.'
+        ),
+        learnMoreUrl: 'https://support.google.com/accounts/answer/1066447',
+        accepts: ['.png', '.jpg', '.jpeg'],
+        multiFile: true,
+        testID: 'settings-import-codes-google-authenticator'
+      },
+      {
+        type: ImportCodesOptionType.Proton2FA,
+        title: t('Proton 2FA'),
+        description: t(
+          'To import your codes, open Proton 2FA, go to Settings, and select Export. Once the export is complete, a file will be generated that you can upload here.'
+        ),
+        learnMoreUrl: 'https://proton.me/support/proton-authenticator',
+        accepts: ['.txt'],
+        multiFile: false,
+        testID: 'settings-import-codes-proton-2fa'
+      }
+    ],
+    [t]
+  )
+
   const resetToDefault = () => {
     setState('default')
     setSelectedOption(null)
     setFiles([])
+    setCodeFileInfo(null)
     setIsScanned(false)
     setIsScanning(false)
     setImportedCodes([])
     setImportError(null)
+    setValues({ password: '' })
   }
 
   const handleBack = () => {
-    resetToDefault()
+    if (state === 'inputPassword') {
+      setState('upload')
+      setValues({ password: '' })
+      setImportError(null)
+    } else {
+      resetToDefault()
+    }
   }
 
-  const handleFilesChange = (newFiles: UploadedFile[]) => {
+  const handleFilesChange = async (newFiles: UploadedFile[]) => {
     setFiles(newFiles)
     if (isScanned && newFiles.length < files.length) {
       setIsScanned(false)
       setImportedCodes([])
       setImportError(null)
     }
+
+    if (!selectedOption) return
+
+    if (selectedOption.type === ImportCodesOptionType.Proton2FA) {
+      if (newFiles.length === 0) {
+        setCodeFileInfo(null)
+        return
+      }
+      try {
+        const text = await readFileContent(newFiles[0].file)
+        const parsedJson = parseCodeJsonContent(text as string)
+        setCodeFileInfo({
+          fileContent: text as string,
+          parsedJson,
+          isEncrypted: detectIsCodeFileEncrypted(
+            selectedOption.type,
+            parsedJson
+          )
+        })
+      } catch {
+        setCodeFileInfo(null)
+      }
+    }
   }
 
-  const handleScanFiles = async () => {
+  const handleContinue = async () => {
     if (!selectedOption || files.length === 0) return
 
     setIsScanning(true)
     setImportError(null)
 
     try {
-      const decoded: string[] = await Promise.all(
-        files.map((f) => decodeQrFromImage(f.file))
-      )
-
-      const result: NormalizeResult = normalizeImport(decoded)
-
-      if (result.status === 'incomplete-batch') {
-        setImportError(
-          t(
-            'To finish your export, please upload all required QR codes. ({received} currently uploaded)',
-            {
-              received: result.received
-            }
-          )
+      if (selectedOption.type === ImportCodesOptionType.GoogleAuthenticator) {
+        const decoded: string[] = await Promise.all(
+          files.map((f) => decodeQrFromImage(f.file))
         )
-        return
-      }
 
-      setImportedCodes(result.records)
-      setIsScanned(true)
+        const result: NormalizeResult = normalizeImport(decoded)
+
+        if (result.status === 'incomplete-batch') {
+          setImportError(
+            t(
+              'To finish your export, please upload all required QR codes. ({received} currently uploaded)',
+              {
+                received: result.received
+              }
+            )
+          )
+          return
+        }
+
+        setImportedCodes(result.records)
+        setIsScanned(true)
+      } else if (selectedOption.type === ImportCodesOptionType.Proton2FA) {
+        if (!codeFileInfo) return
+
+        if (codeFileInfo.isEncrypted) {
+          setValues({ password: '' })
+          setState('inputPassword')
+          return
+        }
+
+        const records: OTPRecord[] = normalizeProtonAuthenticator(
+          codeFileInfo.fileContent
+        )
+
+        setImportedCodes(records)
+        setIsScanned(true)
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       setImportError(message)
+    } finally {
+      setIsScanning(false)
+    }
+  }
+
+  const handleImportEncrypted = async ({ password }: { password: string }) => {
+    if (!selectedOption || !codeFileInfo?.parsedJson) return
+
+    setIsScanning(true)
+    setImportError(null)
+
+    try {
+      if (selectedOption.type === ImportCodesOptionType.Proton2FA) {
+        const { version, salt, content } = codeFileInfo.parsedJson as {
+          version: number
+          salt: string
+          content: string
+        }
+        const plaintext = await decryptProtonExport({
+          version,
+          salt,
+          content,
+          password
+        })
+        const records: OTPRecord[] = normalizeProtonAuthenticator(plaintext)
+        setImportedCodes(records)
+        setIsScanned(true)
+        setState('upload')
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (/incorrect password/i.test(message)) {
+        setErrors({
+          password: t(
+            'Failed to decrypt file. Please check your password and try again.'
+          )
+        })
+      } else {
+        setImportError(message)
+      }
     } finally {
       setIsScanning(false)
     }
@@ -178,7 +298,7 @@ export const ImportCodesContent = () => {
         </>
       )}
 
-      {state === 'upload' && selectedOption && (
+      {(state === 'upload' || state === 'inputPassword') && selectedOption && (
         <>
           <div style={styles.backButton}>
             <Button
@@ -220,18 +340,35 @@ export const ImportCodesContent = () => {
             </Text>
           </div>
 
-          <div style={styles.uploadArea}>
-            <UploadField
-              acceptedFormats={selectedOption.accepts}
-              maxFiles={selectedOption.multiFile ? 0 : 1}
-              files={files}
-              onFilesChange={handleFilesChange}
-              uploadLinkText={t('Upload file')}
-              uploadSuffixText={t('or drag and drop it here')}
-              formatsPrefix={t('Required Format:')}
-              testID="import-codes-upload-field"
-            />
-          </div>
+          {state === 'inputPassword' ? (
+            <div style={styles.passwordSection}>
+              <PasswordField
+                label={t('File Password')}
+                placeholder={t('Enter file password')}
+                {...passwordProps}
+                onChange={(e) => onChangePassword(e.target.value)}
+                testID="import-codes-password-field"
+              />
+              <Text color={theme.colors.colorTextSecondary} variant="caption">
+                {t(
+                  'This file is encrypted. Enter the password used to create this backup.'
+                )}
+              </Text>
+            </div>
+          ) : (
+            <div style={styles.uploadArea}>
+              <UploadField
+                acceptedFormats={selectedOption.accepts}
+                maxFiles={selectedOption.multiFile ? 0 : 1}
+                files={files}
+                onFilesChange={handleFilesChange}
+                uploadLinkText={t('Upload file')}
+                uploadSuffixText={t('or drag and drop it here')}
+                formatsPrefix={t('Required Format:')}
+                testID="import-codes-upload-field"
+              />
+            </div>
+          )}
 
           {importError && (
             <AlertMessage
@@ -244,16 +381,35 @@ export const ImportCodesContent = () => {
           )}
 
           <div style={styles.footer}>
-            <Button
-              variant="primary"
-              size="small"
-              disabled={files.length === 0 || isScanning}
-              isLoading={isScanning}
-              onClick={handleScanFiles}
-              data-testid="import-codes-scan-file-button"
-            >
-              {t('Scan File')}
-            </Button>
+            {!isScanned &&
+              (state === 'inputPassword' ? (
+                <Button
+                  variant="primary"
+                  size="small"
+                  disabled={!values.password || isScanning}
+                  isLoading={isScanning}
+                  onClick={handleSubmit(handleImportEncrypted)}
+                  data-testid="import-codes-import-button"
+                >
+                  {t('Scan File')}
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="small"
+                  disabled={
+                    (selectedOption.type ===
+                    ImportCodesOptionType.GoogleAuthenticator
+                      ? files.length === 0
+                      : codeFileInfo === null) || isScanning
+                  }
+                  isLoading={isScanning}
+                  onClick={handleContinue}
+                  data-testid="import-codes-scan-file-button"
+                >
+                  {codeFileInfo?.isEncrypted ? t('Continue') : t('Scan File')}
+                </Button>
+              ))}
           </div>
 
           {isScanned && (
