@@ -33,7 +33,14 @@ export const useCopyToClipboard = ({ onCopy } = {}) => {
   }, [])
 
   const copyToClipboard = (text) => {
-    if (isCopyToClipboardDisabled) return false
+    if (isCopyToClipboardDisabled) {
+      setToast?.({
+        message: t(
+          'Please turn on the Copy to clipboard action from your settings'
+        )
+      })
+      return false
+    }
     if (!text || typeof text !== 'string') {
       logger.error('useCopyToClipboard', 'Text to copy is invalid or undefined')
       return false

@@ -18,6 +18,11 @@ jest.mock('@tetherto/pearpass-lib-constants', () => ({
   CLIPBOARD_CLEAR_TIMEOUT: 1000
 }))
 
+const mockSetToast = jest.fn()
+jest.mock('../context/ToastContext', () => ({
+  useToast: () => ({ setToast: mockSetToast })
+}))
+
 describe('useCopyToClipboard.electron', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -72,6 +77,9 @@ describe('useCopyToClipboard.electron', () => {
 
     expect(copied).toBe(false)
     expect(navigator.clipboard.writeText).not.toHaveBeenCalled()
+    expect(mockSetToast).toHaveBeenCalledWith({
+      message: 'Please turn on the Copy to clipboard action from your settings'
+    })
   })
 
   it('copies text and sets isCopied on success', async () => {
