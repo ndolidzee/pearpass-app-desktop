@@ -61,6 +61,7 @@ export const createStyles = (colors: ThemeColors) => ({
     display: 'flex' as const,
     justifyContent: 'flex-end' as const,
     alignSelf: 'flex-end' as const,
+    gap: `${rawTokens.spacing8}px`,
     width: '100%',
     boxSizing: 'border-box' as const
   }

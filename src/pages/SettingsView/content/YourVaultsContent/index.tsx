@@ -14,6 +14,7 @@ import {
   Add,
   Devices,
   Edit,
+  ImportOutlined,
   LockOutlined,
   MoreVert,
   PersonAdd,
@@ -29,6 +30,7 @@ import {
 import { AddDeviceModalContent } from '../../../../containers/Modal/AddDeviceModalContent/AddDeviceModalContent'
 import { CreateOrEditVaultModalContent } from '../../../../containers/Modal/CreateOrEditVaultModalContent/CreateOrEditVaultModalContent'
 import { DeleteVaultModalContent } from '../../../../containers/Modal/DeleteVaultModalContent'
+import { ImportItemOrVaultModalContent } from '../../../../containers/Modal/ImportItemOrVaultModalContent'
 import { PairedDevicesModalContent } from '../../../../containers/Modal/PairedDevicesModalContent'
 import { useModal } from '../../../../context/ModalContext'
 import { useTranslation } from '../../../../hooks/useTranslation'
@@ -84,6 +86,10 @@ export const YourVaultsContent = () => {
       />
     )
   }, [closeModal, setModal])
+
+  const openImportModal = useCallback(() => {
+    setModal(<ImportItemOrVaultModalContent />)
+  }, [setModal])
 
   const openEditModal = useCallback(
     (v: Vault) => {
@@ -277,10 +283,19 @@ export const YourVaultsContent = () => {
 
       <div style={styles.footer}>
         <Button
+          variant="secondary"
+          size="medium"
+          data-testid="settings-your-vaults-import"
+          iconBefore={<ImportOutlined width={16} height={16} />}
+          onClick={openImportModal}
+        >
+          {t('Import Vault')}
+        </Button>
+        <Button
           variant="primary"
           size="medium"
           data-testid="settings-your-vaults-create"
-          iconBefore={<Add />}
+          iconBefore={<Add width={16} height={16} />}
           onClick={openCreateModal}
         >
           {t('Create new Vault')}
