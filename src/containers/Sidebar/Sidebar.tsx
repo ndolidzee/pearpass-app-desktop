@@ -94,6 +94,8 @@ export const Sidebar = () => {
     )
   }, [foldersData])
 
+  const allFoldersCount = customFolders.reduce((sum, f) => sum + f.count, 0)
+
   const favoritesCount =
     (foldersData?.favorites?.records?.length as number | undefined) ?? 0
 
@@ -102,7 +104,9 @@ export const Sidebar = () => {
   // Folder selection doesn't apply in authenticator mode; fall back to "all"
   // so clicking a folder exits authenticator cleanly instead of landing on the
   // nonsensical { recordType: RECORD_TYPES.OTP, folder: X } state.
-  const folderClickRecordType = isAuthenticatorActive ? 'all' : currentRecordType
+  const folderClickRecordType = isAuthenticatorActive
+    ? 'all'
+    : currentRecordType
 
   const handleCategoryClick = (type: string) => {
     navigate('vault', {
@@ -252,143 +256,147 @@ export const Sidebar = () => {
 
       <div style={styles.scrollContainer}>
         <div style={styles.scrollArea}>
-        {isVaultSelectorOpen && (
-          <VaultSelector onClose={() => setIsVaultSelectorOpen(false)} />
-        )}
+          {isVaultSelectorOpen && (
+            <VaultSelector onClose={() => setIsVaultSelectorOpen(false)} />
+          )}
 
-        {!isVaultSelectorOpen && (
-          <>
-            <div style={styles.sectionList}>
-              {categoriesItems.map((item) => {
-            const selected = activeCategory === item.type
-            const Icon = selected ? item.FilledIcon : item.OutlinedIcon
-            const iconColor = selected
-              ? theme.colors.colorTextPrimary
-              : theme.colors.colorTextSecondary
-
-            return (
-              <NavbarListItem
-                key={item.type}
-                testID={`sidebar-category-${item.type}`}
-                label={item.label}
-                count={isCollapsed ? undefined : recordCounts?.[item.type] ?? 0}
-                selected={selected}
-                variant={selected ? 'default' : 'secondary'}
-                size="small"
-                icon={<Icon color={iconColor} />}
-                onClick={() => handleCategoryClick(item.type)}
-              />
-            )
-          })}
-        </div>
-
-        <hr style={styles.divider} />
-
-        <div style={styles.sectionList}>
-          <div style={styles.foldersHeader}>
-            <div style={styles.foldersHeaderToggle}>
-              <Pressable
-                onClick={() => setIsFoldersExpanded((value) => !value)}
-                data-testid="sidebar-folders-toggle"
-                aria-label={t('Folders')}
-              >
-                <div style={styles.foldersHeaderToggleInner}>
-                  <ExpandMore
-                    width={16}
-                    height={16}
-                    style={{
-                      ...iconTextSecondary,
-                      ...styles.chevron,
-                      transform: `translateX(${
-                        isCollapsed ? FOLDERS_CHEVRON_CENTER_SHIFT_PX : 0
-                      }px) rotate(${!isFoldersExpanded ? -90 : 0}deg)`
-                    }}
-                  />
-                  <div style={styles.foldersHeaderLabel}>
-                    <Text
-                      variant="labelEmphasized"
-                      color={theme.colors.colorTextSecondary}
-                    >
-                      {t('Folders')}
-                    </Text>
-                  </div>
-                </div>
-              </Pressable>
-            </div>
-
-            {!isCollapsed && (
-              <Button
-                variant="tertiary"
-                size="small"
-                onClick={handleAddFolderClick}
-                data-testid="sidebar-folder-add"
-                aria-label={t('Add folder')}
-                iconBefore={<CreateNewFolder style={iconTextSecondary} />}
-              />
-            )}
-          </div>
-
-          {isFoldersExpanded && (
+          {!isVaultSelectorOpen && (
             <>
-              <NavbarListItem
-                testID="sidebar-folder-all"
-                label={t('All Folders')}
-                count={isCollapsed ? undefined : recordCounts?.all ?? 0}
-                selected={isAllFoldersActive}
-                variant={isAllFoldersActive ? 'default' : 'secondary'}
-                size="small"
-                icon={
-                  <FolderCopy
-                    color={
-                      isAllFoldersActive
-                        ? theme.colors.colorTextPrimary
-                        : theme.colors.colorTextSecondary
-                    }
-                  />
-                }
-                onClick={handleAllFoldersClick}
-              />
+              <div style={styles.sectionList}>
+                {categoriesItems.map((item) => {
+                  const selected = activeCategory === item.type
+                  const Icon = selected ? item.FilledIcon : item.OutlinedIcon
+                  const iconColor = selected
+                    ? theme.colors.colorTextPrimary
+                    : theme.colors.colorTextSecondary
 
-              <NavbarListItem
-                testID="sidebar-folder-favorites"
-                label={t('Favorites')}
-                count={isCollapsed ? undefined : favoritesCount}
-                selected={isFavoritesActive}
-                variant={isFavoritesActive ? 'default' : 'secondary'}
-                size="small"
-                icon={
-                  isFavoritesActive ? (
-                    <StarFilled color={theme.colors.colorTextPrimary} />
-                  ) : (
-                    <StarBorder color={theme.colors.colorTextSecondary} />
+                  return (
+                    <NavbarListItem
+                      key={item.type}
+                      testID={`sidebar-category-${item.type}`}
+                      label={item.label}
+                      count={
+                        isCollapsed
+                          ? undefined
+                          : (recordCounts?.[item.type] ?? 0)
+                      }
+                      selected={selected}
+                      variant={selected ? 'default' : 'secondary'}
+                      size="small"
+                      icon={<Icon color={iconColor} />}
+                      onClick={() => handleCategoryClick(item.type)}
+                    />
                   )
-                }
-                onClick={() => handleFolderClick(FAVORITES_FOLDER_ID)}
-              />
+                })}
+              </div>
 
-              {customFolders.map((folder) => (
-                <FolderRow
-                  key={folder.name}
-                  folder={folder}
-                  selected={selectedFolderName === folder.name}
-                  isCollapsed={isCollapsed}
-                  menuOpen={openFolderMenu === folder.name}
-                  onMenuOpenChange={(open) =>
-                    setOpenFolderMenu(open ? folder.name : null)
-                  }
-                  styles={styles}
-                  theme={theme}
-                  onSelect={handleFolderClick}
-                  onRename={handleRenameFolder}
-                  onDelete={handleDeleteFolder}
-                  t={t}
-                />
-              ))}
+              <hr style={styles.divider} />
+
+              <div style={styles.sectionList}>
+                <div style={styles.foldersHeader}>
+                  <div style={styles.foldersHeaderToggle}>
+                    <Pressable
+                      onClick={() => setIsFoldersExpanded((value) => !value)}
+                      data-testid="sidebar-folders-toggle"
+                      aria-label={t('Folders')}
+                    >
+                      <div style={styles.foldersHeaderToggleInner}>
+                        <ExpandMore
+                          width={16}
+                          height={16}
+                          style={{
+                            ...iconTextSecondary,
+                            ...styles.chevron,
+                            transform: `translateX(${
+                              isCollapsed ? FOLDERS_CHEVRON_CENTER_SHIFT_PX : 0
+                            }px) rotate(${!isFoldersExpanded ? -90 : 0}deg)`
+                          }}
+                        />
+                        <div style={styles.foldersHeaderLabel}>
+                          <Text
+                            variant="labelEmphasized"
+                            color={theme.colors.colorTextSecondary}
+                          >
+                            {t('Folders')}
+                          </Text>
+                        </div>
+                      </div>
+                    </Pressable>
+                  </div>
+
+                  {!isCollapsed && (
+                    <Button
+                      variant="tertiary"
+                      size="small"
+                      onClick={handleAddFolderClick}
+                      data-testid="sidebar-folder-add"
+                      aria-label={t('Add folder')}
+                      iconBefore={<CreateNewFolder style={iconTextSecondary} />}
+                    />
+                  )}
+                </div>
+
+                {isFoldersExpanded && (
+                  <>
+                    <NavbarListItem
+                      testID="sidebar-folder-all"
+                      label={t('All Folders')}
+                      count={isCollapsed ? undefined : allFoldersCount}
+                      selected={isAllFoldersActive}
+                      variant={isAllFoldersActive ? 'default' : 'secondary'}
+                      size="small"
+                      icon={
+                        <FolderCopy
+                          color={
+                            isAllFoldersActive
+                              ? theme.colors.colorTextPrimary
+                              : theme.colors.colorTextSecondary
+                          }
+                        />
+                      }
+                      onClick={handleAllFoldersClick}
+                    />
+
+                    <NavbarListItem
+                      testID="sidebar-folder-favorites"
+                      label={t('Favorites')}
+                      count={isCollapsed ? undefined : favoritesCount}
+                      selected={isFavoritesActive}
+                      variant={isFavoritesActive ? 'default' : 'secondary'}
+                      size="small"
+                      icon={
+                        isFavoritesActive ? (
+                          <StarFilled color={theme.colors.colorTextPrimary} />
+                        ) : (
+                          <StarBorder color={theme.colors.colorTextSecondary} />
+                        )
+                      }
+                      onClick={() => handleFolderClick(FAVORITES_FOLDER_ID)}
+                    />
+
+                    {customFolders.map((folder) => (
+                      <FolderRow
+                        key={folder.name}
+                        folder={folder}
+                        selected={selectedFolderName === folder.name}
+                        isCollapsed={isCollapsed}
+                        menuOpen={openFolderMenu === folder.name}
+                        onMenuOpenChange={(open) =>
+                          setOpenFolderMenu(open ? folder.name : null)
+                        }
+                        styles={styles}
+                        theme={theme}
+                        onSelect={handleFolderClick}
+                        onRename={handleRenameFolder}
+                        onDelete={handleDeleteFolder}
+                        t={t}
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
             </>
           )}
-        </div>
-          </>
-        )}
         </div>
         <div style={styles.fadeGradient} aria-hidden="true" />
       </div>
