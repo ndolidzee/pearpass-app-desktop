@@ -362,6 +362,7 @@ export const ImportCodesContent = () => {
                 maxFiles={selectedOption.multiFile ? 0 : 1}
                 files={files}
                 onFilesChange={handleFilesChange}
+                allowDragAndDrop
                 uploadLinkText={t('Upload file')}
                 uploadSuffixText={t('or drag and drop it here')}
                 formatsPrefix={t('Required Format:')}
