@@ -16,6 +16,7 @@ import {
   Edit,
   ImportOutlined,
   LockOutlined,
+  LockPerson,
   MoreVert,
   PersonAdd,
   TrashOutlined
@@ -106,9 +107,7 @@ export const YourVaultsContent = () => {
 
   const openDeleteModal = useCallback(
     (v: Vault) => {
-      setModal(
-        <DeleteVaultModalContent vaultId={v.id} vaultName={v.name} />
-      )
+      setModal(<DeleteVaultModalContent vaultId={v.id} vaultName={v.name} />)
     },
     [setModal]
   )
@@ -117,11 +116,14 @@ export const YourVaultsContent = () => {
     count: itemCount
   })
 
-  const DevicesMeta = vault?.devices?.length
-    ? t('{count, plural, one {# Device} other {# Devices}}', {
-        count: vault?.devices?.length ?? 0
-      })
-    : t('Private')
+  const deviceCount = vault?.devices?.length ?? 0
+
+  const DevicesMeta =
+    deviceCount > 1
+      ? t('{count, plural, one {# Device} other {# Devices}}', {
+          count: deviceCount
+        })
+      : t('Private')
 
   const handleSwitchToVault = useCallback(
     (v: Vault) => {
@@ -159,11 +161,19 @@ export const YourVaultsContent = () => {
             subtitle={{ primary: ItemCount, secondary: DevicesMeta }}
             icon={
               <div style={styles.iconWrap}>
-                <LockOutlined
-                  color={theme.colors.colorPrimary}
-                  width={16}
-                  height={16}
-                />
+                {deviceCount > 1 ? (
+                  <LockPerson
+                    color={theme.colors.colorPrimary}
+                    width={16}
+                    height={16}
+                  />
+                ) : (
+                  <LockOutlined
+                    color={theme.colors.colorPrimary}
+                    width={16}
+                    height={16}
+                  />
+                )}
               </div>
             }
             rightElement={
